@@ -72,3 +72,12 @@
   cursor: pointer;
   font-weight: semibold;
 }
+
+/* Details section */
+.floor-card {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  overflow: hidden;
+}
