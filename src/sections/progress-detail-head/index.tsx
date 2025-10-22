@@ -1,13 +1,13 @@
 import "./styles.css"
 
 const ProgressDetailHead = () => {
-  
+
   return (
 
-    <div className="progress-detail">
-      
+    <div className="progress-detail bg-[#fafafa] hover:bg-[#f5f5f5]">
+
       <div className="progress-detail-left">
-        
+
         <span className="progress-checkbox-container">
           <input type="checkbox"
             className="progress-checkbox"
