@@ -1,7 +1,21 @@
 import ProgressDetailHead from "@/components/common/progress-detail-head"
 import "./styles.css"
+import type { LineItem } from "@/types"
+import { useEffect, useState } from "react"
 
-const AreaCard = ({ name, status, expanded, handleClick }: { name: string, status: boolean, expanded: boolean, handleClick: () => void }) => {
+interface AreaCard {
+  name: string,
+  status: boolean,
+  expanded: boolean,
+  handleClick: () => void,
+  lineItems: LineItem[]
+}
+
+const AreaCard = ({ name, status, expanded, handleClick, lineItems }: AreaCard) => {
+
+  const [lineItemsState, setLineItemsState] = useState(lineItems)
+  useEffect(() => setLineItemsState(lineItems), [lineItems])
+
   return (
     <div className="area-card">
       <ProgressDetailHead handleClick={() => handleClick()} section='area' itemName={name} itemStatus={status} />
@@ -18,15 +32,20 @@ const AreaCard = ({ name, status, expanded, handleClick }: { name: string, statu
           </thead>
           <tbody>
 
-            <tr className="completed">
-              <td className="checkbox-col">
-                <span className="checkmark">✓</span>
-              </td>
-              <td><span className="checkmark">✓</span>LIT-02 (lit)</td>
-              <td>2</td>
-              <td>-</td>
-              <td><span className="eye-icon">👁</span></td>
-            </tr>
+            {lineItemsState.map((lineItem, lineItemIndex) => (
+              <tr key={lineItemIndex} className={`${lineItem.status && "completed opacity-60"}`}>
+                <td className="checkbox-col">
+                  <span className="checkmark">✓</span>
+                </td>
+                <td>
+                  {lineItem.status && <span className="checkmark">✓</span>}
+                  {lineItem.name}
+                </td>
+                <td>{lineItem.planned_quantity}</td>
+                <td>-</td>
+                <td><span className="eye-icon">👁</span></td>
+              </tr>
+            ))}
 
             <tr className="">
               <td className="checkbox-col">

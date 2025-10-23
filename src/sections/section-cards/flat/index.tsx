@@ -3,6 +3,7 @@ import AreaCard from "../area"
 import "./styles.css"
 import type { AreaProgress } from "@/types"
 import { useCallback, useEffect, useState } from "react"
+import { LINE_ITEMS_DUMMY } from "@/data"
 
 interface FlatCard {
   flatNumber: number,
@@ -34,6 +35,7 @@ const FlatCard = ({ flatNumber, bhkCount, expanded, handleClick, areas }: FlatCa
             status={area.status}
             expanded={area.expanded || false}
             handleClick={() => toggleAreaExpansion(area.id)}
+            lineItems={LINE_ITEMS_DUMMY.filter(lineItem => lineItem.area_id === area.id)}
           />
         ))}
       </div>

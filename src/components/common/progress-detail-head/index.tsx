@@ -31,7 +31,7 @@ const ProgressDetailHead = ({
         <span className="progress-number">
           [10 / 19]
         </span>
-        <span className="progress-status-badge">
+        <span className={`progress-status-badge ${itemStatus ? "completed" : "pending"}`}>
           {itemStatus ? "Completed" : "Pending"}
         </span>
         <span className='chevron'>
