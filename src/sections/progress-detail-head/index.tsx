@@ -1,10 +1,14 @@
 import "./styles.css"
 
-const ProgressDetailHead = () => {
+const ProgressDetailHead = ({
+  handleClick,
+  section,
+  background,
+}: { handleClick: () => void, section: "floor" | "flat" | "area", background?: boolean }) => {
 
   return (
 
-    <div className="progress-detail bg-[#fafafa] hover:bg-[#f5f5f5]">
+    <div className={`progress-detail ${section} ${background && "bg-[#fafafa]"} hover:bg-[#f5f5f5]`} onClick={handleClick}>
 
       <div className="progress-detail-left">
 

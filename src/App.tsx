@@ -1,9 +1,13 @@
+import { useState } from 'react'
 import './App.css'
 import AppBreadcrumb from './components/layout/breadcrumb'
 import FilterCard from './sections/filter-card'
 import ProgressDetailHead from './sections/progress-detail-head'
 
 function App() {
+
+  const [floor, setFloor] = useState(false)
+
   return (
     <>
       <div className='breadcrumb'>
@@ -37,23 +41,29 @@ function App() {
 
         <div className="floor-card">
 
-          <ProgressDetailHead />
+          <ProgressDetailHead handleClick={() => setFloor(prev => !prev)} background section='floor' />
 
-          <div className="floor-content">
+          <div className={`floor-content ${floor ? "block" : "hidden"}`}>
             <div className="flat-card">
 
-
+              <ProgressDetailHead handleClick={() => { }} background section='flat' />
 
               <div className="flat-content">
                 <div className="area-card">
+                  <ProgressDetailHead handleClick={() => { }} section='area' />
+                  <div className="area-content">
+                    <table></table>
+                  </div>
+                </div>
 
-
-
+                <div className="area-card">
+                  <ProgressDetailHead handleClick={() => { }} section='area' />
                   <div className="area-content">
                     <table></table>
                   </div>
                 </div>
               </div>
+
             </div>
           </div>
 

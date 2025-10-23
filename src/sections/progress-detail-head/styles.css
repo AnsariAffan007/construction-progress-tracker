@@ -2,8 +2,19 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 20px;
   user-select: none;
+}
+
+.progress-detail.floor {
+  padding: 16px 20px;
+}
+
+.progress-detail.flat {
+  padding: 14px 16px;
+}
+
+.progress-detail.area {
+  padding: 12px 14px;
 }
 
 /* - */
