@@ -2,7 +2,7 @@ import { useState } from 'react'
 import './App.css'
 import AppBreadcrumb from './components/layout/breadcrumb'
 import FilterCard from './sections/filter-card'
-import ProgressDetailHead from './sections/progress-detail-head'
+import ProgressDetailHead from './components/common/progress-detail-head'
 
 function App() {
 
