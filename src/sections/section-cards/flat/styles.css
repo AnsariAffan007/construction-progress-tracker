@@ -1,0 +1,10 @@
+.floor-card>.floor-content>.flat-card {
+  background: #fafafa;
+  border: 1px solid #e8e8e8;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.floor-card>.floor-content>.flat-card>.flat-content {
+  padding: 10px;
+}

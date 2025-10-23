@@ -1,0 +1,42 @@
+.floor-card>.floor-content>.flat-card>.flat-content>.area-card {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.area-card>.area-content>table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table>thead {
+  background: #f8f8f8;
+}
+
+table>thead th {
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+table .checkbox-col {
+  display: none;
+  width: 50px;
+}
+
+table>tbody td {
+  padding: 12px 14px;
+  font-size: 13px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+table>tbody td>.checkmark {
+  color: #10b981;
+  font-size: 18px;
+  display: inline-block;
+  margin-right: 8px;
+}
