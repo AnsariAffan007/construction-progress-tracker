@@ -3,6 +3,7 @@ import FlatCard from '../flat'
 import "./styles.css"
 import type { FlatProgress } from '@/types'
 import { useCallback, useEffect, useState } from 'react'
+import { AREAS_DUMMY } from '@/data'
 
 interface FloorCard {
   floorName: string,
@@ -33,6 +34,7 @@ const FloorCard = ({ floorName, expanded, handleClick, flats }: FloorCard) => {
             flatNumber={flat.flat_number}
             expanded={flat.expanded || false}
             handleClick={() => toggleFlatExpansion(flat.id)}
+            areas={AREAS_DUMMY.filter(area => area.flat_id === flat.id)}
           />
         ))}
       </div>

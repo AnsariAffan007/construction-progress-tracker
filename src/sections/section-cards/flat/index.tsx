@@ -1,16 +1,41 @@
 import ProgressDetailHead from "@/components/common/progress-detail-head"
 import AreaCard from "../area"
 import "./styles.css"
+import type { AreaProgress } from "@/types"
+import { useCallback, useEffect, useState } from "react"
 
-const FlatCard = ({ flatNumber, bhkCount, expanded, handleClick }: { flatNumber: number, bhkCount: number, expanded: boolean, handleClick: () => void }) => {
+interface FlatCard {
+  flatNumber: number,
+  bhkCount: number,
+  expanded: boolean,
+  handleClick: () => void,
+  areas: AreaProgress[]
+}
+
+const FlatCard = ({ flatNumber, bhkCount, expanded, handleClick, areas }: FlatCard) => {
+
+  const [areasState, setAreasState] = useState(areas)
+  useEffect(() => setAreasState(areas), [areas])
+
+  const toggleAreaExpansion = useCallback((areaId: number) => {
+    setAreasState(prev => prev.map(area => area.id === areaId ? { ...area, expanded: !area.expanded } : { ...area }))
+  }, [])
+
   return (
     <div className="flat-card">
 
       <ProgressDetailHead handleClick={() => handleClick()} background section='flat' itemName={`${flatNumber} [${bhkCount}-BHK]`} />
 
       <div className={`flat-content ${expanded ? "block" : "hidden"}`}>
-        <AreaCard />
-        <AreaCard />
+        {areasState.map((area, areaIndex) => (
+          <AreaCard
+            key={areaIndex}
+            name={area.name}
+            status={area.status}
+            expanded={area.expanded || false}
+            handleClick={() => toggleAreaExpansion(area.id)}
+          />
+        ))}
       </div>
 
     </div>

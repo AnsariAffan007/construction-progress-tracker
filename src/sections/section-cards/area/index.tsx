@@ -1,11 +1,11 @@
 import ProgressDetailHead from "@/components/common/progress-detail-head"
 import "./styles.css"
 
-const AreaCard = () => {
+const AreaCard = ({ name, status, expanded, handleClick }: { name: string, status: boolean, expanded: boolean, handleClick: () => void }) => {
   return (
     <div className="area-card">
-      <ProgressDetailHead handleClick={() => { }} section='area' />
-      <div className="area-content">
+      <ProgressDetailHead handleClick={() => handleClick()} section='area' itemName={name} itemStatus={status} />
+      <div className={`area-content ${expanded ? "block" : "hidden"}`}>
         <table>
           <thead>
             <tr>
