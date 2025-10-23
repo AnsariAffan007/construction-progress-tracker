@@ -4,8 +4,11 @@ import AppBreadcrumb from './components/layout/breadcrumb'
 import FilterCard from './sections/filter-card'
 import FloorCard from './sections/section-cards/floor'
 import { FLATS_DUMMY, FLOORS_DUMMY } from './data'
+import { ProgressContextProvider } from './ProgressContext'
 
 function App() {
+
+  const [editing, setEditing] = useState(false)
 
   const [floors, setFloors] = useState(FLOORS_DUMMY)
   const toggleFloorExpansion = useCallback((floorId: number) => {
@@ -13,7 +16,7 @@ function App() {
   }, [])
 
   return (
-    <>
+    <ProgressContextProvider values={{ editing: editing }}>
       <div className='breadcrumb'>
         <span>☰</span>
         <AppBreadcrumb />
@@ -55,10 +58,22 @@ function App() {
 
       </div>
 
-      <button className='update-button'>
-        Update Details
-      </button>
-    </>
+      {!editing ? (
+        <button className='update-button fixed bottom-[30px] right-[30px] bg-[#1f2937]' onClick={() => setEditing(true)}>
+          Update Details
+        </button>
+      ) : (
+        <div className='flex gap-x-4 items-center fixed bottom-[30px] right-[30px]'>
+          <button className='update-button bg-[#10b981]'>
+            Save
+          </button>
+          <button className='update-button bg-[#1f2937]' onClick={() => setEditing(false)}>
+            Cancel
+          </button>
+        </div>
+      )}
+
+    </ProgressContextProvider>
   )
 }
 
