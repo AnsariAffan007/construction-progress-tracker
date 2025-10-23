@@ -27,8 +27,9 @@
 
 /* --- */
 .progress-detail>.progress-detail-left>.progress-checkbox-container {
-  display: none;
   margin-right: 4px;
+  justify-content: center;
+  align-items: center;
 }
 
 /* ------ */

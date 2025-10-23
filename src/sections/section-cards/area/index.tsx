@@ -2,6 +2,7 @@ import ProgressDetailHead from "@/components/common/progress-detail-head"
 import "./styles.css"
 import type { LineItem } from "@/types"
 import { useEffect, useState } from "react"
+import { useProgressContext } from "@/ProgressContext"
 
 interface AreaCard {
   name: string,
@@ -16,6 +17,8 @@ const AreaCard = ({ name, status, expanded, handleClick, lineItems }: AreaCard) 
   const [lineItemsState, setLineItemsState] = useState(lineItems)
   useEffect(() => setLineItemsState(lineItems), [lineItems])
 
+  const { editing } = useProgressContext()
+
   return (
     <div className="area-card">
       <ProgressDetailHead handleClick={() => handleClick()} section='area' itemName={name} itemStatus={status} />
@@ -23,7 +26,7 @@ const AreaCard = ({ name, status, expanded, handleClick, lineItems }: AreaCard) 
         <table>
           <thead>
             <tr>
-              <th className="checkbox-col">Completed</th>
+              <th className={`checkbox-col ${editing ? "block" : "hidden"}`}>Completed</th>
               <th>Line Item</th>
               <th>Planned Qty</th>
               <th>Remarks</th>
@@ -34,8 +37,11 @@ const AreaCard = ({ name, status, expanded, handleClick, lineItems }: AreaCard) 
 
             {lineItemsState.map((lineItem, lineItemIndex) => (
               <tr key={lineItemIndex} className={`${lineItem.status && "completed opacity-60"}`}>
-                <td className="checkbox-col">
-                  <span className="checkmark">✓</span>
+                <td className={`checkbox-col ${editing ? "block" : "hidden"}`}>
+                  {lineItem.status
+                    ? <span className="checkmark">✓</span>
+                    : <input type="checkbox" className="checkbox line-item-checkbox" data-id="li12" data-area-id="kitchen103" />
+                  }
                 </td>
                 <td>
                   {lineItem.status && <span className="checkmark">✓</span>}
@@ -46,16 +52,6 @@ const AreaCard = ({ name, status, expanded, handleClick, lineItems }: AreaCard) 
                 <td><span className="eye-icon">👁</span></td>
               </tr>
             ))}
-
-            <tr className="">
-              <td className="checkbox-col">
-                <input type="checkbox" className="checkbox line-item-checkbox" data-id="li12" data-area-id="kitchen103" />
-              </td>
-              <td>SG CHEMICAL NEW X (t)</td>
-              <td>1</td>
-              <td>-</td>
-              <td><span className="eye-icon">👁</span></td>
-            </tr>
 
           </tbody>
         </table>

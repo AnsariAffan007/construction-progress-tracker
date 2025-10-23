@@ -1,3 +1,4 @@
+import { useProgressContext } from "@/ProgressContext"
 import "./styles.css"
 
 const ProgressDetailHead = ({
@@ -8,13 +9,15 @@ const ProgressDetailHead = ({
   background,
 }: { itemName?: string, itemStatus?: boolean, handleClick: () => void, section: "floor" | "flat" | "area", background?: boolean }) => {
 
+  const { editing } = useProgressContext()
+
   return (
 
     <div className={`progress-detail ${section} ${background && "bg-[#fafafa]"} hover:bg-[#f5f5f5]`} onClick={handleClick}>
 
       <div className="progress-detail-left">
 
-        <span className="progress-checkbox-container">
+        <span className={`progress-checkbox-container ${editing ? "flex" : "hidden"}`}>
           <input type="checkbox"
             className="progress-checkbox"
             data-floor-id="floor1"

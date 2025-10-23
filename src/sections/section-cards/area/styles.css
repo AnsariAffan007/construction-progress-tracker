@@ -24,8 +24,14 @@ table>thead th {
 }
 
 table .checkbox-col {
-  display: none;
   width: 50px;
+}
+
+.checkbox-col>.checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #10b981;
 }
 
 table>tbody td {
