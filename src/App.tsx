@@ -54,6 +54,10 @@ function App() {
         ))}
 
       </div>
+
+      <button className='update-button'>
+        Update Details
+      </button>
     </>
   )
 }
