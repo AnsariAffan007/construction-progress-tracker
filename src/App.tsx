@@ -1,9 +1,16 @@
+import { useCallback, useState } from 'react'
 import './App.css'
 import AppBreadcrumb from './components/layout/breadcrumb'
 import FilterCard from './sections/filter-card'
 import FloorCard from './sections/section-cards/floor'
+import { FLATS_DUMMY, FLOORS_DUMMY } from './data'
 
 function App() {
+
+  const [floors, setFloors] = useState(FLOORS_DUMMY)
+  const toggleFloorExpansion = useCallback((floorId: number) => {
+    setFloors(prev => prev.map(floor => floor.id === floorId ? { ...floor, expanded: !floor.expanded } : { ...floor }))
+  }, [])
 
   return (
     <>
@@ -36,7 +43,15 @@ function App() {
 
       <div id='layoutContainer'>
 
-        <FloorCard />
+        {floors.map((floor, floorIndex) => (
+          <FloorCard
+            key={floorIndex}
+            floorName={floor.name}
+            expanded={floor.expanded || false}
+            handleClick={() => toggleFloorExpansion(floor.id)}
+            flats={FLATS_DUMMY.filter(flat => flat.floor_id === floor.id)}
+          />
+        ))}
 
       </div>
     </>

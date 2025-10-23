@@ -1,22 +1,20 @@
-export type FloorProgress = {
-  flats: FlatProgress[];
-} & ProgressItem
-
-type FlatProgress = {
+export type FlatProgress = {
+  floor_id: number;
+  flat_number: number;
   bhk: number;
-  areas: AreaProgress[];
+} & Omit<ProgressItem, "name">
+
+export type AreaProgress = {
+  flat_id: number;
 } & ProgressItem
 
-type AreaProgress = {
-  items: LineItem[]
-} & ProgressItem
-
-type LineItem = {
+export type LineItem = {
+  area_id: number;
   planned_quantity: number;
   remarks: string;
 } & Omit<ProgressItem, "expanded">;
 
-type ProgressItem = {
+export type ProgressItem = {
   id: number;
   name: string;
   status: boolean;

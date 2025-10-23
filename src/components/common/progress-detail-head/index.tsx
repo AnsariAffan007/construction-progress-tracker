@@ -1,10 +1,12 @@
 import "./styles.css"
 
 const ProgressDetailHead = ({
+  itemName,
+  itemStatus,
   handleClick,
   section,
   background,
-}: { handleClick: () => void, section: "floor" | "flat" | "area", background?: boolean }) => {
+}: { itemName?: string, itemStatus?: boolean, handleClick: () => void, section: "floor" | "flat" | "area", background?: boolean }) => {
 
   return (
 
@@ -20,7 +22,7 @@ const ProgressDetailHead = ({
           />
         </span>
         <div className="progress-expand-trigger">
-          <span>Floor 1</span>
+          <span>{itemName}</span>
         </div>
 
       </div>
@@ -30,7 +32,7 @@ const ProgressDetailHead = ({
           [10 / 19]
         </span>
         <span className="progress-status-badge">
-          Pending
+          {itemStatus ? "Completed" : "Pending"}
         </span>
         <span className='chevron'>
           ▼
