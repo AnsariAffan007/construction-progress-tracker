@@ -21,6 +21,14 @@ const AreaCard = ({ checked, handleCheckedChange, name, status, expanded, handle
 
   const { editing } = useProgressContext()
 
+  const [itemsChecked, setItemsChecked] = useState(() => {
+    const temp: Record<number, boolean> = {}
+    lineItems.forEach(item => {
+      temp[item.id] = item.checked || false
+    })
+    return temp
+  })
+
   return (
     <div className="area-card">
 
@@ -51,7 +59,12 @@ const AreaCard = ({ checked, handleCheckedChange, name, status, expanded, handle
                 <td className={`checkbox-col ${editing ? "block" : "hidden"}`}>
                   {lineItem.status
                     ? <span className="checkmark">✓</span>
-                    : <input type="checkbox" className="checkbox" />
+                    : <input
+                      type="checkbox"
+                      className="checkbox"
+                      onChange={() => setItemsChecked(prev => ({ ...prev, [lineItem.id]: !prev[lineItem.id] }))}
+                      checked={itemsChecked[lineItem.id]}
+                    />
                   }
                 </td>
                 <td>
