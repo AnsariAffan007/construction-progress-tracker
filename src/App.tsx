@@ -15,6 +15,14 @@ function App() {
     setFloors(prev => prev.map(floor => floor.id === floorId ? { ...floor, expanded: !floor.expanded } : { ...floor }))
   }, [])
 
+  const [floorsChecked, setFloorsChecked] = useState(() => {
+    const temp: Record<number, boolean> = {}
+    FLOORS_DUMMY.forEach(floor => {
+      temp[floor.id] = floor.checked || false
+    })
+    return temp
+  })
+
   return (
     <ProgressContextProvider values={{ editing: editing }}>
       <div className='breadcrumb'>
@@ -53,6 +61,8 @@ function App() {
             expanded={floor.expanded || false}
             handleClick={() => toggleFloorExpansion(floor.id)}
             flats={FLATS_DUMMY.filter(flat => flat.floor_id === floor.id)}
+            checked={floorsChecked[floor.id] || false}
+            handleCheckedChange={() => setFloorsChecked(prev => ({ ...prev, [floor.id]: !prev[floor.id] }))}
           />
         ))}
 

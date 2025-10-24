@@ -40,7 +40,7 @@ const AreaCard = ({ name, status, expanded, handleClick, lineItems }: AreaCard) 
                 <td className={`checkbox-col ${editing ? "block" : "hidden"}`}>
                   {lineItem.status
                     ? <span className="checkmark">✓</span>
-                    : <input type="checkbox" className="checkbox line-item-checkbox" data-id="li12" data-area-id="kitchen103" />
+                    : <input type="checkbox" className="checkbox" />
                   }
                 </td>
                 <td>

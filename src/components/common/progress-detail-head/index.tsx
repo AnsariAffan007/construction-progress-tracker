@@ -1,13 +1,25 @@
 import { useProgressContext } from "@/ProgressContext"
 import "./styles.css"
 
+interface ProgressDetailHead {
+  itemName?: string,
+  itemStatus?: boolean,
+  handleClick: () => void,
+  section: "floor" | "flat" | "area",
+  background?: boolean,
+  checked: boolean,
+  handleCheckedChange: () => void
+}
+
 const ProgressDetailHead = ({
   itemName,
   itemStatus,
   handleClick,
   section,
   background,
-}: { itemName?: string, itemStatus?: boolean, handleClick: () => void, section: "floor" | "flat" | "area", background?: boolean }) => {
+  checked,
+  handleCheckedChange
+}: ProgressDetailHead) => {
 
   const { editing } = useProgressContext()
 
@@ -20,7 +32,8 @@ const ProgressDetailHead = ({
         <span className={`progress-checkbox-container ${editing ? "flex" : "hidden"}`}>
           <input type="checkbox"
             className="progress-checkbox"
-            data-floor-id="floor1"
+            checked={checked}
+            onChange={() => handleCheckedChange()}
             onClick={e => e.stopPropagation()}
           />
         </span>

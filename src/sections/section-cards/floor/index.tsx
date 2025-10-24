@@ -9,10 +9,12 @@ interface FloorCard {
   floorName: string,
   expanded: boolean,
   handleClick: () => void,
-  flats: FlatProgress[]
+  flats: FlatProgress[],
+  checked: boolean,
+  handleCheckedChange: () => void
 }
 
-const FloorCard = ({ floorName, expanded, handleClick, flats }: FloorCard) => {
+const FloorCard = ({ checked, handleCheckedChange, floorName, expanded, handleClick, flats }: FloorCard) => {
 
   const [flatsState, setFlatsState] = useState(flats)
   // useEffect(() => setFlatsState(flats), [flats])
@@ -21,10 +23,25 @@ const FloorCard = ({ floorName, expanded, handleClick, flats }: FloorCard) => {
     setFlatsState(prev => prev.map(flat => flat.id === flatId ? { ...flat, expanded: !flat.expanded } : { ...flat }))
   }, [])
 
+  // const cancelFloorSelection = useCallback(() => {
+
+  // }, [])
+
+  // const saveFloorSelection = useCallback(() => {
+
+  // }, [])
+
   return (
     <div className="floor-card">
 
-      <ProgressDetailHead handleClick={() => handleClick()} background section='floor' itemName={floorName} />
+      <ProgressDetailHead
+        handleClick={() => handleClick()}
+        background
+        section='floor'
+        itemName={floorName}
+        checked={checked}
+        handleCheckedChange={handleCheckedChange}
+      />
 
       <Activity mode={expanded ? 'visible' : "hidden"}>
         <div className={`floor-content`}>
