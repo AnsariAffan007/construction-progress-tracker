@@ -35,7 +35,7 @@ function App() {
   const flatsCheckerCallerRef = useRef<Record<number, ((floorId: number, floorChecked: boolean) => void)>>({})
 
   return (
-    <ProgressContextProvider values={{ editing: editing }}>
+    <ProgressContextProvider editing={editing}>
       <div className='breadcrumb'>
         <span>☰</span>
         <AppBreadcrumb />

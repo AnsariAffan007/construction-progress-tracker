@@ -1,7 +1,9 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, type RefObject } from "react";
 
 type ProgressContextType = {
-  editing: boolean
+  editing: boolean,
+  flatsCheckersOnFloorChange?: RefObject<Record<number, (floorId: number, floorChecked: boolean) => void>>
+  areasCheckerOnFlatChange?: RefObject<Record<number, (flatId: number, flatChecked: boolean) => void>>
 }
 
 const ProgressContext = createContext<ProgressContextType>({
@@ -11,9 +13,9 @@ const ProgressContext = createContext<ProgressContextType>({
 // eslint-disable-next-line react-refresh/only-export-components
 export const useProgressContext = () => useContext(ProgressContext)
 
-export const ProgressContextProvider = ({ values, children }: { values: ProgressContextType, children: React.ReactNode }) => {
+export const ProgressContextProvider = ({ editing, children }: { editing: boolean, children: React.ReactNode }) => {
   return (
-    <ProgressContext.Provider value={values}>
+    <ProgressContext.Provider value={{ editing: editing }}>
       {children}
     </ProgressContext.Provider>
   )
