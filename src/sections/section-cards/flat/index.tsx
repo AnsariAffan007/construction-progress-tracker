@@ -11,10 +11,12 @@ interface FlatCard {
   bhkCount: number,
   expanded: boolean,
   handleClick: () => void,
-  areas: AreaProgress[]
+  areas: AreaProgress[],
+  checked: boolean,
+  handleCheckedChange: () => void
 }
 
-const FlatCard = ({ flatNumber, bhkCount, expanded, handleClick, areas }: FlatCard) => {
+const FlatCard = ({ checked, handleCheckedChange, flatNumber, bhkCount, expanded, handleClick, areas }: FlatCard) => {
 
   const [areasState, setAreasState] = useState(areas)
   // useEffect(() => setAreasState(areas), [areas])
@@ -26,7 +28,14 @@ const FlatCard = ({ flatNumber, bhkCount, expanded, handleClick, areas }: FlatCa
   return (
     <div className="flat-card">
 
-      <ProgressDetailHead handleClick={() => handleClick()} background section='flat' itemName={`${flatNumber} [${bhkCount}-BHK]`} />
+      <ProgressDetailHead
+        handleClick={() => handleClick()}
+        background
+        section='flat'
+        itemName={`${flatNumber} [${bhkCount}-BHK]`}
+        checked={checked}
+        handleCheckedChange={handleCheckedChange}
+      />
 
       <Activity mode={expanded ? "visible" : "hidden"}>
         <div className={`flat-content`}>
