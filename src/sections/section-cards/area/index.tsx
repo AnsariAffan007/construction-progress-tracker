@@ -9,10 +9,12 @@ interface AreaCard {
   status: boolean,
   expanded: boolean,
   handleClick: () => void,
-  lineItems: LineItem[]
+  lineItems: LineItem[],
+  checked: boolean,
+  handleCheckedChange: () => void
 }
 
-const AreaCard = ({ name, status, expanded, handleClick, lineItems }: AreaCard) => {
+const AreaCard = ({ checked, handleCheckedChange, name, status, expanded, handleClick, lineItems }: AreaCard) => {
 
   const [lineItemsState, setLineItemsState] = useState(lineItems)
   useEffect(() => setLineItemsState(lineItems), [lineItems])
@@ -21,7 +23,16 @@ const AreaCard = ({ name, status, expanded, handleClick, lineItems }: AreaCard) 
 
   return (
     <div className="area-card">
-      <ProgressDetailHead handleClick={() => handleClick()} section='area' itemName={name} itemStatus={status} />
+
+      <ProgressDetailHead
+        handleClick={() => handleClick()}
+        section='area'
+        itemName={name}
+        itemStatus={status}
+        checked={checked}
+        handleCheckedChange={handleCheckedChange}
+      />
+
       <div className={`area-content ${expanded ? "block" : "hidden"}`}>
         <table>
           <thead>
@@ -56,6 +67,7 @@ const AreaCard = ({ name, status, expanded, handleClick, lineItems }: AreaCard) 
           </tbody>
         </table>
       </div>
+
     </div>
   )
 }

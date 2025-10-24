@@ -25,6 +25,14 @@ const FlatCard = ({ checked, handleCheckedChange, flatNumber, bhkCount, expanded
     setAreasState(prev => prev.map(area => area.id === areaId ? { ...area, expanded: !area.expanded } : { ...area }))
   }, [])
 
+  const [areasChecked, setAreasChecked] = useState(() => {
+    const temp: Record<number, boolean> = {}
+    areas.forEach(area => {
+      temp[area.id] = area.checked || false
+    })
+    return temp
+  })
+
   return (
     <div className="flat-card">
 
@@ -47,6 +55,8 @@ const FlatCard = ({ checked, handleCheckedChange, flatNumber, bhkCount, expanded
               expanded={area.expanded || false}
               handleClick={() => toggleAreaExpansion(area.id)}
               lineItems={LINE_ITEMS_DUMMY.filter(lineItem => lineItem.area_id === area.id)}
+              checked={areasChecked[area.id] || false}
+              handleCheckedChange={() => setAreasChecked(prev => ({ ...prev, [area.id]: !prev[area.id] }))}
             />
           ))}
         </div>

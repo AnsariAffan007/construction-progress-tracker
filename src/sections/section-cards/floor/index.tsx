@@ -3,7 +3,7 @@ import FlatCard from '../flat'
 import "./styles.css"
 import type { FlatProgress } from '@/types'
 import { Activity, useCallback, useState } from 'react'
-import { AREAS_DUMMY, FLATS_DUMMY } from '@/data'
+import { AREAS_DUMMY } from '@/data'
 
 interface FloorCard {
   floorName: string,
@@ -25,8 +25,8 @@ const FloorCard = ({ checked, handleCheckedChange, floorName, expanded, handleCl
 
   const [flatsChecked, setFlatsChecked] = useState(() => {
     const temp: Record<number, boolean> = {}
-    FLATS_DUMMY.forEach(floor => {
-      temp[floor.id] = floor.checked || false
+    flats.forEach(flat => {
+      temp[flat.id] = flat.checked || false
     })
     return temp
   })
