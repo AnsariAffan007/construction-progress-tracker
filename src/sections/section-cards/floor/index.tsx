@@ -2,19 +2,32 @@ import ProgressDetailHead from '@/components/common/progress-detail-head'
 import FlatCard from '../flat'
 import "./styles.css"
 import type { FlatProgress } from '@/types'
-import { Activity, useCallback, useState } from 'react'
+import { Activity, useCallback, useEffect, useState, type RefObject } from 'react'
 import { AREAS_DUMMY } from '@/data'
 
 interface FloorCard {
+  floorId: number,
   floorName: string,
   expanded: boolean,
   handleClick: () => void,
   flats: FlatProgress[],
   checked: boolean,
-  handleCheckedChange: () => void
+  handleCheckedChange: () => void,
+  setFloorCheckedOnFlatsCheck: (floorId: number, flats: Record<number, boolean>) => void,
+  flatsCheckerCallerRef: RefObject<Record<number, (floorId: number, floorChecked: boolean) => void>>
 }
 
-const FloorCard = ({ checked, handleCheckedChange, floorName, expanded, handleClick, flats }: FloorCard) => {
+const FloorCard = ({
+  checked,
+  handleCheckedChange,
+  floorId,
+  floorName,
+  expanded,
+  handleClick,
+  flats,
+  setFloorCheckedOnFlatsCheck,
+  flatsCheckerCallerRef
+}: FloorCard) => {
 
   const [flatsState, setFlatsState] = useState(flats)
   // useEffect(() => setFlatsState(flats), [flats])
@@ -30,6 +43,25 @@ const FloorCard = ({ checked, handleCheckedChange, floorName, expanded, handleCl
     })
     return temp
   })
+
+  useEffect(() => {
+    setFloorCheckedOnFlatsCheck(floorId, flatsChecked)
+  }, [flatsChecked, setFloorCheckedOnFlatsCheck, floorId])
+
+  const setFlatsCheckedOnFloorCheck = useCallback((floorIdBeingChecked: number, floorChecked: boolean) => {
+    if (floorIdBeingChecked !== floorId) return;
+    setFlatsChecked(prev => {
+      const temp: Record<number, boolean> = {}
+      Object.keys(prev).forEach(flatId => {
+        temp[parseInt(flatId)] = floorChecked
+      })
+      return temp
+    })
+  }, [floorId])
+
+  useEffect(() => {
+    flatsCheckerCallerRef.current[floorId] = setFlatsCheckedOnFloorCheck
+  }, [flatsCheckerCallerRef, setFlatsCheckedOnFloorCheck, floorId])
 
   // const cancelFloorSelection = useCallback(() => {
 

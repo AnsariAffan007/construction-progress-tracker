@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import './App.css'
 import AppBreadcrumb from './components/layout/breadcrumb'
 import FilterCard from './sections/filter-card'
@@ -22,6 +22,17 @@ function App() {
     })
     return temp
   })
+
+  const setFloorCheckedOnFlatsCheck = useCallback((floorId: number, flats: Record<number, boolean>) => {
+    let isOneFlatUnchecked: boolean = false;
+    Object.values(flats).forEach(flatChecked => {
+      if (!flatChecked) isOneFlatUnchecked = true
+    })
+    if (isOneFlatUnchecked) setFloorsChecked(prev => ({ ...prev, [floorId]: false }))
+    else setFloorsChecked(prev => ({ ...prev, [floorId]: true }))
+  }, [])
+
+  const flatsCheckerCallerRef = useRef<Record<number, ((floorId: number, floorChecked: boolean) => void)>>({})
 
   return (
     <ProgressContextProvider values={{ editing: editing }}>
@@ -57,12 +68,22 @@ function App() {
         {floors.map((floor, floorIndex) => (
           <FloorCard
             key={floorIndex}
+            floorId={floor.id}
             floorName={floor.name}
             expanded={floor.expanded || false}
             handleClick={() => toggleFloorExpansion(floor.id)}
             flats={FLATS_DUMMY.filter(flat => flat.floor_id === floor.id)}
             checked={floorsChecked[floor.id] || false}
-            handleCheckedChange={() => setFloorsChecked(prev => ({ ...prev, [floor.id]: !prev[floor.id] }))}
+            handleCheckedChange={() => {
+              let newCheckedVal: boolean
+              setFloorsChecked(prev => {
+                newCheckedVal = !prev[floor.id]
+                return { ...prev, [floor.id]: newCheckedVal }
+              })
+              setTimeout(() => flatsCheckerCallerRef.current?.[floor.id]?.(floor.id, newCheckedVal), 0)
+            }}
+            setFloorCheckedOnFlatsCheck={setFloorCheckedOnFlatsCheck}
+            flatsCheckerCallerRef={flatsCheckerCallerRef}
           />
         ))}
 
