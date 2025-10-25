@@ -2,8 +2,8 @@ import ProgressDetailHead from '@/components/common/progress-detail-head'
 import FlatCard from '../flat'
 import "./styles.css"
 import type { FlatProgress } from '@/types'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { AREAS_DUMMY } from '@/data'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { AREAS_DUMMY, LINE_ITEMS_DUMMY } from '@/data'
 import { useProgressContext } from '@/ProgressContext'
 
 interface FloorCard {
@@ -92,7 +92,7 @@ const FloorCard = ({
   }, [])
 
   // Parent to child propagation (Flat checking triggers areas checked recalculation & items checked recalculation)
-  const { areasCheckerOnFlatChange, itemsCheckerOnAreaChange } = useProgressContext()
+  const { areasCheckerOnFlatChange, itemsCheckerOnAreaChange, itemFilter } = useProgressContext()
   const handleFlatCheck = useCallback((flatId: number) => {
     let newCheckedVal: boolean
     setFlatsChecked(prev => {
@@ -127,6 +127,17 @@ const FloorCard = ({
     handleFlatSelectionsRef.current[floorId] = handleFlatSelection
   }, [handleFlatSelection, handleFlatSelectionsRef, floorId])
 
+  // #region Filtering
+  const filteredFlats = useMemo(() => {
+    if (itemFilter.length === 0) return flatsState
+    return flatsState.filter(flat => {
+      const areasUnderFlat_ids = AREAS_DUMMY.filter(area => area.flat_id === flat.id).map(area => area.id)
+      const itemsUnderAboveAreas_names = LINE_ITEMS_DUMMY.filter(item => areasUnderFlat_ids.includes(item.area_id)).map(item => item.name)
+      if (itemsUnderAboveAreas_names.includes(itemFilter)) return true;
+      else return false;
+    })
+  }, [flatsState, itemFilter])
+
   // #region JSX
   return (
     <div className="floor-card">
@@ -142,9 +153,9 @@ const FloorCard = ({
       />
 
       <div className={`floor-content ${expanded ? 'expanded' : ''}`}>
-        {flatsState.map((flat, flatIndex) => (
+        {filteredFlats.map(flat => (
           <FlatCard
-            key={flatIndex}
+            key={flat.id}
             flatId={flat.id}
             bhkCount={flat.bhk}
             flatNumber={flat.flat_number}

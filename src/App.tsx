@@ -43,7 +43,12 @@ function App() {
       {/* Item filters */}
       <div className='filter-section'>
         <label>Filter Line Items:</label>
-        <select id="lineItemFilter" className='filter-dropdown' onChange={(e) => setItemFilter(e.target.value)}>
+        <select
+          id="lineItemFilter"
+          className='filter-dropdown'
+          value={itemFilter}
+          onChange={(e) => setItemFilter(e.target.value)}
+        >
           <option value="">Select an option</option>
           {uniqueLineItems.map(lineItem => {
             return (

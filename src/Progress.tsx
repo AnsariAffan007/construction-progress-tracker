@@ -6,6 +6,8 @@ import FloorCard from './sections/section-cards/floor'
 // #region MAIN
 const Progress = () => {
 
+  const { flatsCheckersOnFloorChange, areasCheckerOnFlatChange, itemsCheckerOnAreaChange, handleFloorSelectionsRef } = useProgressContext()
+
   // Listing state
   const [floors, setFloors] = useState(FLOORS_DUMMY)
 
@@ -38,7 +40,6 @@ const Progress = () => {
   }, [])
 
   // Parent propagating to child (Floor check triggers (flats, area, & items) checked state recalculation)
-  const { flatsCheckersOnFloorChange, areasCheckerOnFlatChange, itemsCheckerOnAreaChange, handleFloorSelectionsRef } = useProgressContext()
   const handleFloorCheck = useCallback((floorId: number) => {
     let newCheckedVal: boolean
     setFloorsChecked(prev => {

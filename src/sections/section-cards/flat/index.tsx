@@ -2,7 +2,7 @@ import ProgressDetailHead from "@/components/common/progress-detail-head"
 import AreaCard from "../area"
 import "./styles.css"
 import type { AreaProgress } from "@/types"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { LINE_ITEMS_DUMMY } from "@/data"
 import { useProgressContext } from "@/ProgressContext"
 
@@ -62,7 +62,7 @@ const FlatCard = ({ status, flatId, checked, handleCheckedChange, flatNumber, bh
     })
   }, [flatId])
 
-  const { areasCheckerOnFlatChange, handleAreaSelectionsRef } = useProgressContext()
+  const { areasCheckerOnFlatChange, handleAreaSelectionsRef, itemFilter } = useProgressContext()
   useEffect(() => {
     areasCheckerOnFlatChange.current[flatId] = setAreasCheckedOnFlatCheck
   }, [areasCheckerOnFlatChange, flatId, setAreasCheckedOnFlatCheck])
@@ -110,6 +110,16 @@ const FlatCard = ({ status, flatId, checked, handleCheckedChange, flatNumber, bh
     handleAreaSelectionsRef.current[flatId] = handleAreaSelection
   }, [handleAreaSelectionsRef, handleAreaSelection, flatId])
 
+  // #region Filtering
+  const filteredAreas = useMemo(() => {
+    if (itemFilter.length === 0) return areasState
+    return areasState.filter(area => {
+      const itemsUnderArea = LINE_ITEMS_DUMMY.filter(item => item.area_id === area.id).map(item => item.name)
+      if (itemsUnderArea.includes(itemFilter)) return true
+      else return false;
+    })
+  }, [itemFilter, areasState])
+
   // #region JSX
   return (
     <div className="flat-card">
@@ -125,9 +135,9 @@ const FlatCard = ({ status, flatId, checked, handleCheckedChange, flatNumber, bh
       />
 
       <div className={`flat-content ${expanded ? "expanded" : ''}`}>
-        {areasState.map((area, areaIndex) => (
+        {filteredAreas.map(area => (
           <AreaCard
-            key={areaIndex}
+            key={area.id}
             areaId={area.id}
             name={area.name}
             status={area.status}

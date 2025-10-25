@@ -1,7 +1,7 @@
 import ProgressDetailHead from "@/components/common/progress-detail-head"
 import "./styles.css"
 import type { LineItem } from "@/types"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useProgressContext } from "@/ProgressContext"
 
 interface AreaCard {
@@ -59,7 +59,7 @@ const AreaCard = ({ areaId, checked, handleCheckedChange, name, status, expanded
     itemsCheckerOnAreaChange.current[areaId] = setItemsCheckedOnAreaChange
   }, [itemsCheckerOnAreaChange, areaId, setItemsCheckedOnAreaChange])
 
-  const { editing, handleItemSelectionsRef } = useProgressContext()
+  const { editing, handleItemSelectionsRef, itemFilter } = useProgressContext()
 
   // #region Save/Revert
   const handleItemSelections = useCallback((action: "save" | "cancel") => {
@@ -77,6 +77,12 @@ const AreaCard = ({ areaId, checked, handleCheckedChange, name, status, expanded
   useEffect(() => {
     handleItemSelectionsRef.current[areaId] = handleItemSelections
   }, [handleItemSelectionsRef, handleItemSelections, areaId])
+
+  // #region Filtering
+  const filteredItems = useMemo(() => {
+    if (itemFilter.length === 0) return lineItemsState
+    return lineItemsState.filter(item => item.name === itemFilter)
+  }, [itemFilter, lineItemsState])
 
   // #region JSX
   return (
@@ -104,7 +110,7 @@ const AreaCard = ({ areaId, checked, handleCheckedChange, name, status, expanded
           </thead>
           <tbody>
 
-            {lineItemsState.map((lineItem, lineItemIndex) => (
+            {filteredItems.map((lineItem, lineItemIndex) => (
               <tr key={lineItemIndex} className={`${lineItem.status && "completed opacity-60"}`}>
                 <td className={`checkbox-col ${editing ? "block" : "hidden"}`}>
                   {lineItem.status
