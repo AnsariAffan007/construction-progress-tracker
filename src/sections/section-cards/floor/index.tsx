@@ -2,7 +2,7 @@ import ProgressDetailHead from '@/components/common/progress-detail-head'
 import FlatCard from '../flat'
 import "./styles.css"
 import type { FlatProgress } from '@/types'
-import { Activity, useCallback, useEffect, useState } from 'react'
+import { Activity, useCallback, useEffect, useRef, useState } from 'react'
 import { AREAS_DUMMY } from '@/data'
 import { useProgressContext } from '@/ProgressContext'
 
@@ -53,8 +53,10 @@ const FloorCard = ({
   // Floor - parent  |  Flat - CHILD (Current)
 
   // Child propagating to parent (Flats checking trigger recalculation of floor checked)
+  const isFirstRender = useRef(true) // To prevent floor checking on first render
   useEffect(() => {
-    setFloorCheckedOnFlatsCheck(floorId, flatsChecked)
+    if (!isFirstRender.current) setFloorCheckedOnFlatsCheck(floorId, flatsChecked)
+    isFirstRender.current = false;
   }, [flatsChecked, setFloorCheckedOnFlatsCheck, floorId])
 
   // Parent propagating to child (Floor check triggers flats checked state recalculation)

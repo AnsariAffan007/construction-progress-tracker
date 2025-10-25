@@ -1,7 +1,7 @@
 import ProgressDetailHead from "@/components/common/progress-detail-head"
 import "./styles.css"
 import type { LineItem } from "@/types"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useProgressContext } from "@/ProgressContext"
 
 interface AreaCard {
@@ -36,8 +36,10 @@ const AreaCard = ({ areaId, checked, handleCheckedChange, name, status, expanded
   // Area - Parent  |  Item - Child  (Both are in same current component)
 
   // Child to parent propagation (Items checking triggers area checked recalculation)
+  const isFirstRender = useRef(true) // To prevent flat checking on first render
   useEffect(() => {
-    setAreaCheckedOnItemsCheck(areaId, itemsChecked)
+    if (!isFirstRender.current) setAreaCheckedOnItemsCheck(areaId, itemsChecked)
+    isFirstRender.current = false;
   }, [itemsChecked, setAreaCheckedOnItemsCheck, areaId])
 
   // Parent to child propagation (Area checking triggers items checking logic)

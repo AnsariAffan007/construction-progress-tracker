@@ -2,7 +2,7 @@ import ProgressDetailHead from "@/components/common/progress-detail-head"
 import AreaCard from "../area"
 import "./styles.css"
 import type { AreaProgress } from "@/types"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { LINE_ITEMS_DUMMY } from "@/data"
 import { Activity } from "react"
 import { useProgressContext } from "@/ProgressContext"
@@ -45,8 +45,10 @@ const FlatCard = ({ status, flatId, checked, handleCheckedChange, flatNumber, bh
   // Flat - Parent (Current)  |  Area - child
 
   // Child to parent propagation (Areas checking triggering flat checked recalculation)
+  const isFirstRender = useRef(true) // To prevent flat checking on first render
   useEffect(() => {
-    setFlatCheckedOnAreasCheck(flatId, areasChecked)
+    if (!isFirstRender.current) setFlatCheckedOnAreasCheck(flatId, areasChecked)
+    isFirstRender.current = false
   }, [setFlatCheckedOnAreasCheck, areasChecked, flatId])
 
   // Parent to child propagation (Flat checking triggers logic of areas checking)
