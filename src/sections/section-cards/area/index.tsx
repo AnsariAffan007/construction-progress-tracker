@@ -91,7 +91,7 @@ const AreaCard = ({ areaId, checked, handleCheckedChange, name, status, expanded
         handleCheckedChange={handleCheckedChange}
       />
 
-      <div className={`area-content ${expanded ? "block" : "hidden"}`}>
+      <div className={`area-content ${expanded ? "expanded" : ""}`}>
         <table>
           <thead>
             <tr>

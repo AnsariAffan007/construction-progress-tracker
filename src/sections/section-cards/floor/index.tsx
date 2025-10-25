@@ -2,7 +2,7 @@ import ProgressDetailHead from '@/components/common/progress-detail-head'
 import FlatCard from '../flat'
 import "./styles.css"
 import type { FlatProgress } from '@/types'
-import { Activity, useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { AREAS_DUMMY } from '@/data'
 import { useProgressContext } from '@/ProgressContext'
 
@@ -141,25 +141,23 @@ const FloorCard = ({
         itemStatus={status}
       />
 
-      <Activity mode={expanded ? 'visible' : "hidden"}>
-        <div className={`floor-content`}>
-          {flatsState.map((flat, flatIndex) => (
-            <FlatCard
-              key={flatIndex}
-              flatId={flat.id}
-              bhkCount={flat.bhk}
-              flatNumber={flat.flat_number}
-              expanded={flat.expanded || false}
-              handleClick={() => toggleFlatExpansion(flat.id)}
-              areas={AREAS_DUMMY.filter(area => area.flat_id === flat.id)}
-              checked={flatsChecked[flat.id] || false}
-              handleCheckedChange={() => handleFlatCheck(flat.id)}
-              setFlatCheckedOnAreasCheck={setFlatCheckedOnAreasCheck}
-              status={flat.status}
-            />
-          ))}
-        </div>
-      </Activity>
+      <div className={`floor-content ${expanded ? 'expanded' : ''}`}>
+        {flatsState.map((flat, flatIndex) => (
+          <FlatCard
+            key={flatIndex}
+            flatId={flat.id}
+            bhkCount={flat.bhk}
+            flatNumber={flat.flat_number}
+            expanded={flat.expanded || false}
+            handleClick={() => toggleFlatExpansion(flat.id)}
+            areas={AREAS_DUMMY.filter(area => area.flat_id === flat.id)}
+            checked={flatsChecked[flat.id] || false}
+            handleCheckedChange={() => handleFlatCheck(flat.id)}
+            setFlatCheckedOnAreasCheck={setFlatCheckedOnAreasCheck}
+            status={flat.status}
+          />
+        ))}
+      </div>
 
     </div>
   )

@@ -4,7 +4,6 @@ import "./styles.css"
 import type { AreaProgress } from "@/types"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { LINE_ITEMS_DUMMY } from "@/data"
-import { Activity } from "react"
 import { useProgressContext } from "@/ProgressContext"
 
 interface FlatCard {
@@ -125,24 +124,22 @@ const FlatCard = ({ status, flatId, checked, handleCheckedChange, flatNumber, bh
         itemStatus={status}
       />
 
-      <Activity mode={expanded ? "visible" : "hidden"}>
-        <div className={`flat-content`}>
-          {areasState.map((area, areaIndex) => (
-            <AreaCard
-              key={areaIndex}
-              areaId={area.id}
-              name={area.name}
-              status={area.status}
-              expanded={area.expanded || false}
-              handleClick={() => toggleAreaExpansion(area.id)}
-              lineItems={LINE_ITEMS_DUMMY.filter(lineItem => lineItem.area_id === area.id)}
-              checked={areasChecked[area.id] || false}
-              handleCheckedChange={() => handleAreaCheck(area.id)}
-              setAreaCheckedOnItemsCheck={setAreaCheckedOnItemsCheck}
-            />
-          ))}
-        </div>
-      </Activity>
+      <div className={`flat-content ${expanded ? "expanded" : ''}`}>
+        {areasState.map((area, areaIndex) => (
+          <AreaCard
+            key={areaIndex}
+            areaId={area.id}
+            name={area.name}
+            status={area.status}
+            expanded={area.expanded || false}
+            handleClick={() => toggleAreaExpansion(area.id)}
+            lineItems={LINE_ITEMS_DUMMY.filter(lineItem => lineItem.area_id === area.id)}
+            checked={areasChecked[area.id] || false}
+            handleCheckedChange={() => handleAreaCheck(area.id)}
+            setAreaCheckedOnItemsCheck={setAreaCheckedOnItemsCheck}
+          />
+        ))}
+      </div>
 
     </div>
   )

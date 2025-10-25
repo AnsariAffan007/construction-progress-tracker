@@ -7,5 +7,14 @@
 }
 
 .floor-card>.floor-content {
+  padding: 0 10px;
+  transition: height 0.5s ease, padding 0.75s ease;
+  overflow: hidden;
+  height: 0;
+  interpolate-size: allow-keywords;
+}
+
+.floor-card>.floor-content.expanded {
+  height: auto;
   padding: 10px;
 }
