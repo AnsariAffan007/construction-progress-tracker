@@ -1,0 +1,20 @@
+.floor-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  overflow: hidden;
+  background: white;
+}
+
+.floor-card>.floor-content {
+  padding: 0 10px;
+  transition: height 0.5s ease, padding 0.75s ease;
+  overflow: hidden;
+  height: 0;
+  interpolate-size: allow-keywords;
+}
+
+.floor-card>.floor-content.expanded {
+  height: auto;
+  padding: 10px;
+}

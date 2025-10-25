@@ -1,0 +1,98 @@
+.progress-detail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+}
+
+.progress-detail.floor {
+  padding: 16px 20px;
+}
+
+.progress-detail.flat {
+  padding: 14px 16px;
+}
+
+.progress-detail.area {
+  padding: 12px 14px;
+}
+
+/* - */
+.progress-detail>.progress-detail-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+/* --- */
+.progress-detail>.progress-detail-left>.progress-checkbox-container {
+  margin-right: 4px;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ------ */
+.progress-detail>.progress-detail-left>.progress-checkbox-container>.progress-checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: #10b981;
+  margin-right: 8px;
+}
+
+/* --- */
+.progress-detail>.progress-detail-left>.progress-expand-trigger {
+  cursor: pointer;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ----- */
+.progress-detail>.progress-detail-left>.progress-expand-trigger>.checkmark {
+  color: #10b981;
+  font-size: 18px;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+/* - */
+.progress-detail>.progress-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* --- */
+.progress-detail>.progress-info>.progress-number {
+  font-size: 13px;
+  color: #666;
+  padding: 4px 8px;
+  background: #f0f0f0;
+  border-radius: 4px;
+}
+
+/* --- */
+.progress-detail>.progress-info>.progress-status-badge {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.progress-status-badge.completed {
+  background: #d1fae5;
+  color: #059669;
+}
+
+.progress-status-badge.pending {
+  background: #fff4e5;
+  color: #d97706;
+}
+
+/* --- */
+.progress-detail>.progress-info>.chevron {
+  transition: transform 0.3s;
+  color: #666;
+}

@@ -1,0 +1,19 @@
+.floor-card>.floor-content>.flat-card {
+  background: #fafafa;
+  border: 1px solid #e8e8e8;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.floor-card>.floor-content>.flat-card>.flat-content {
+  padding: 0 10px;
+  transition: height 0.5s ease, padding 0.75s ease;
+  overflow: hidden;
+  height: 0;
+  interpolate-size: allow-keywords
+}
+
+.floor-card>.floor-content>.flat-card>.flat-content.expanded {
+  height: auto;
+  padding: 10px;
+}
