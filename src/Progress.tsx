@@ -1,12 +1,12 @@
-import { useCallback, useEffect, useState } from 'react'
-import { AREAS_DUMMY, FLATS_DUMMY, FLOORS_DUMMY } from './data'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { AREAS_DUMMY, FLATS_DUMMY, FLOORS_DUMMY, LINE_ITEMS_DUMMY } from './data'
 import { useProgressContext } from './ProgressContext'
 import FloorCard from './sections/section-cards/floor'
 
 // #region MAIN
 const Progress = () => {
 
-  const { flatsCheckersOnFloorChange, areasCheckerOnFlatChange, itemsCheckerOnAreaChange, handleFloorSelectionsRef } = useProgressContext()
+  const { flatsCheckersOnFloorChange, areasCheckerOnFlatChange, itemsCheckerOnAreaChange, handleFloorSelectionsRef, itemFilter } = useProgressContext()
 
   // Listing state
   const [floors, setFloors] = useState(FLOORS_DUMMY)
@@ -79,11 +79,23 @@ const Progress = () => {
     handleFloorSelectionsRef.current = handleFloorSelection
   }, [handleFloorSelection, handleFloorSelectionsRef])
 
+  // #region Filtering
+  const filteredFloors = useMemo(() => {
+    if (itemFilter.length === 0) return floors
+    return floors.filter(floor => {
+      const flatsUnderFloor_ids = FLATS_DUMMY.filter(flat => flat.floor_id === floor.id).map(flat => flat.id)
+      const areasUnderAboveFlats_ids = AREAS_DUMMY.filter(area => flatsUnderFloor_ids.includes(area.flat_id)).map(area => area.id)
+      const itemsUnderAboveAreas_names = LINE_ITEMS_DUMMY.filter(item => areasUnderAboveFlats_ids.includes(item.area_id)).map(item => item.name)
+      if (itemsUnderAboveAreas_names.includes(itemFilter)) return true;
+      else return false;
+    })
+  }, [floors, itemFilter])
+
   // #region JSX
   return (
-    floors.map((floor, floorIndex) => (
+    filteredFloors.map(floor => (
       <FloorCard
-        key={floorIndex}
+        key={floor.id}
         floorId={floor.id}
         floorName={floor.name}
         expanded={floor.expanded || false}
