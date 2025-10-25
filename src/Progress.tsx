@@ -32,6 +32,7 @@ const Progress = () => {
     Object.values(flats).forEach(flatChecked => {
       if (!flatChecked) isOneFlatUnchecked = true
     })
+    if (Object.values(flats).length === 0) isOneFlatUnchecked = true
     if (isOneFlatUnchecked) setFloorsChecked(prev => ({ ...prev, [floorId]: false }))
     else setFloorsChecked(prev => ({ ...prev, [floorId]: true }))
   }, [])

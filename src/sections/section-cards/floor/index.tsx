@@ -86,6 +86,7 @@ const FloorCard = ({
     Object.values(areas).forEach(areaChecked => {
       if (!areaChecked) isOneAreaUnchecked = true
     })
+    if (Object.values(areas).length === 0) isOneAreaUnchecked = true
     if (isOneAreaUnchecked) setFlatsChecked(prev => ({ ...prev, [flatId]: false }))
     else setFlatsChecked(prev => ({ ...prev, [flatId]: true }))
   }, [])

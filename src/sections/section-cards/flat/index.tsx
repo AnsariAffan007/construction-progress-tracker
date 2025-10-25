@@ -77,6 +77,7 @@ const FlatCard = ({ status, flatId, checked, handleCheckedChange, flatNumber, bh
     Object.values(items).forEach(itemChecked => {
       if (!itemChecked) isOneItemUnchecked = true
     })
+    if (Object.values(items).length === 0) isOneItemUnchecked = true
     if (isOneItemUnchecked) setAreasChecked(prev => ({ ...prev, [areaId]: false }))
     else setAreasChecked(prev => ({ ...prev, [areaId]: true }))
   }, [])
