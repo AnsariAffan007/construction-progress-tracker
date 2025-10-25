@@ -2,8 +2,9 @@ import ProgressDetailHead from '@/components/common/progress-detail-head'
 import FlatCard from '../flat'
 import "./styles.css"
 import type { FlatProgress } from '@/types'
-import { Activity, useCallback, useEffect, useState, type RefObject } from 'react'
+import { Activity, useCallback, useEffect, useState } from 'react'
 import { AREAS_DUMMY } from '@/data'
+import { useProgressContext } from '@/ProgressContext'
 
 interface FloorCard {
   floorId: number,
@@ -14,7 +15,6 @@ interface FloorCard {
   checked: boolean,
   handleCheckedChange: () => void,
   setFloorCheckedOnFlatsCheck: (floorId: number, flats: Record<number, boolean>) => void,
-  flatsCheckerCallerRef: RefObject<Record<number, (floorId: number, floorChecked: boolean) => void>>
 }
 
 const FloorCard = ({
@@ -26,7 +26,6 @@ const FloorCard = ({
   handleClick,
   flats,
   setFloorCheckedOnFlatsCheck,
-  flatsCheckerCallerRef
 }: FloorCard) => {
 
   const [flatsState, setFlatsState] = useState(flats)
@@ -59,9 +58,11 @@ const FloorCard = ({
     })
   }, [floorId])
 
+  const { flatsCheckersOnFloorChange } = useProgressContext()
+
   useEffect(() => {
-    flatsCheckerCallerRef.current[floorId] = setFlatsCheckedOnFloorCheck
-  }, [flatsCheckerCallerRef, setFlatsCheckedOnFloorCheck, floorId])
+    flatsCheckersOnFloorChange.current[floorId] = setFlatsCheckedOnFloorCheck
+  }, [flatsCheckersOnFloorChange, setFlatsCheckedOnFloorCheck, floorId])
 
   // const cancelFloorSelection = useCallback(() => {
 
