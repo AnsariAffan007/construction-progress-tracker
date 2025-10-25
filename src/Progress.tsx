@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react'
-import { FLATS_DUMMY, FLOORS_DUMMY } from './data'
+import { AREAS_DUMMY, FLATS_DUMMY, FLOORS_DUMMY } from './data'
 import { useProgressContext } from './ProgressContext'
 import FloorCard from './sections/section-cards/floor'
 
@@ -37,7 +37,28 @@ const Progress = () => {
   }, [])
 
   // Parent propagating to child (Floor check triggers flats checked state recalculation)
-  const { flatsCheckersOnFloorChange } = useProgressContext()
+  const { flatsCheckersOnFloorChange, areasCheckerOnFlatChange, itemsCheckerOnAreaChange } = useProgressContext()
+  const handleFloorCheck = useCallback((floorId: number) => {
+    let newCheckedVal: boolean
+    setFloorsChecked(prev => {
+      newCheckedVal = !prev[floorId]
+      return { ...prev, [floorId]: newCheckedVal }
+    })
+    setTimeout(() => {
+      // Checking flats
+      flatsCheckersOnFloorChange.current?.[floorId]?.(floorId, newCheckedVal)
+      // Checking areas
+      const flatIdsUnderThisFloor = FLATS_DUMMY.filter(flat => flat.floor_id === floorId).map(flat => flat.id)
+      flatIdsUnderThisFloor.forEach(flatId => {
+        areasCheckerOnFlatChange.current?.[flatId]?.(flatId, newCheckedVal)
+      })
+      // Checking items
+      const areaIdsUnderAboveFlats = AREAS_DUMMY.filter(area => flatIdsUnderThisFloor.includes(area.flat_id)).map(area => area.id)
+      areaIdsUnderAboveFlats.forEach(areaId => {
+        itemsCheckerOnAreaChange.current?.[areaId]?.(areaId, newCheckedVal)
+      })
+    }, 0)
+  }, [flatsCheckersOnFloorChange, areasCheckerOnFlatChange, itemsCheckerOnAreaChange])
 
   // #region JSX
   return (
@@ -50,14 +71,7 @@ const Progress = () => {
         handleClick={() => toggleFloorExpansion(floor.id)}
         flats={FLATS_DUMMY.filter(flat => flat.floor_id === floor.id)}
         checked={floorsChecked[floor.id] || false}
-        handleCheckedChange={() => {
-          let newCheckedVal: boolean
-          setFloorsChecked(prev => {
-            newCheckedVal = !prev[floor.id]
-            return { ...prev, [floor.id]: newCheckedVal }
-          })
-          setTimeout(() => flatsCheckersOnFloorChange.current?.[floor.id]?.(floor.id, newCheckedVal), 0)
-        }}
+        handleCheckedChange={() => handleFloorCheck(floor.id)}
         setFloorCheckedOnFlatsCheck={setFloorCheckedOnFlatsCheck}
       />
     ))
