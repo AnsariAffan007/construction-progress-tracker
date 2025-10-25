@@ -1,18 +1,26 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import './App.css'
 import AppBreadcrumb from './components/layout/breadcrumb'
 import FilterCard from './sections/filter-card'
 import { ProgressContextProvider, useProgressContext } from './ProgressContext'
 import Progress from './Progress'
 import { AREAS_DUMMY, FLATS_DUMMY, LINE_ITEMS_DUMMY } from './data'
+import type { LineItem } from './types'
 
 // #region MAIN
 function App() {
 
   const [editing, setEditing] = useState(false)
+  const [itemFilter, setItemFilter] = useState<string>("")
+
+  const uniqueLineItems = useMemo(() => {
+    const map: Record<string, LineItem> = {}
+    LINE_ITEMS_DUMMY.forEach(item => map[item.name] = item)
+    return Object.values(map)
+  }, [])
 
   return (
-    <ProgressContextProvider editing={editing}>
+    <ProgressContextProvider editing={editing} itemFilter={itemFilter}>
 
       {/* Breadcrumb */}
       <div className='breadcrumb'>
@@ -35,13 +43,13 @@ function App() {
       {/* Item filters */}
       <div className='filter-section'>
         <label>Filter Line Items:</label>
-        <select id="lineItemFilter" className='filter-dropdown'>
+        <select id="lineItemFilter" className='filter-dropdown' onChange={(e) => setItemFilter(e.target.value)}>
           <option value="">Select an option</option>
-          <option value="LIT-01">LIT-01 (lit)</option>
-          <option value="LIT-02">LIT-02 (lit)</option>
-          <option value="SG CHEMICAL NEW X">SG CHEMICAL NEW X (t)</option>
-          <option value="PAINT-01">PAINT-01 (sqm)</option>
-          <option value="TILE-01">TILE-01 (sqm)</option>
+          {uniqueLineItems.map(lineItem => {
+            return (
+              <option key={lineItem.id} value={lineItem.name}>{lineItem.name}</option>
+            )
+          })}
         </select>
       </div>
 

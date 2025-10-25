@@ -2,6 +2,7 @@ import { createContext, useContext, useRef, type RefObject } from "react";
 
 type ProgressContextType = {
   editing: boolean,
+  itemFilter: string
   // Syncers
   flatsCheckersOnFloorChange: RefObject<Record<number, (floorId: number, floorChecked: boolean) => void>>
   areasCheckerOnFlatChange: RefObject<Record<number, (flatId: number, flatChecked: boolean) => void>>
@@ -15,6 +16,7 @@ type ProgressContextType = {
 
 const ProgressContext = createContext<ProgressContextType>({
   editing: false,
+  itemFilter: "",
   // ---
   flatsCheckersOnFloorChange: { current: {} },
   areasCheckerOnFlatChange: { current: {} },
@@ -29,7 +31,7 @@ const ProgressContext = createContext<ProgressContextType>({
 // eslint-disable-next-line react-refresh/only-export-components
 export const useProgressContext = () => useContext(ProgressContext)
 
-export const ProgressContextProvider = ({ editing, children }: { editing: boolean, children: React.ReactNode }) => {
+export const ProgressContextProvider = ({ editing, itemFilter, children }: { editing: boolean, itemFilter: string, children: React.ReactNode }) => {
 
   const flatsCheckersOnFloorChange = useRef({})
   const areasCheckerOnFlatChange = useRef({})
@@ -44,6 +46,7 @@ export const ProgressContextProvider = ({ editing, children }: { editing: boolea
     <ProgressContext.Provider
       value={{
         editing: editing,
+        itemFilter: itemFilter,
         // ---
         flatsCheckersOnFloorChange: flatsCheckersOnFloorChange,
         areasCheckerOnFlatChange: areasCheckerOnFlatChange,
