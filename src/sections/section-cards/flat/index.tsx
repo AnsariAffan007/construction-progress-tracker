@@ -80,6 +80,15 @@ const FlatCard = ({ flatId, checked, handleCheckedChange, flatNumber, bhkCount, 
 
   // Parent to child propagation (Area change triggers recalculation of items checked)
   const { itemsCheckerOnAreaChange } = useProgressContext()
+  const handleAreaCheck = useCallback((areaId: number) => {
+    let newCheckedVal: boolean
+    setAreasChecked(prev => {
+      newCheckedVal = !prev[areaId]
+      return { ...prev, [areaId]: newCheckedVal }
+    })
+    // Check items
+    setTimeout(() => itemsCheckerOnAreaChange.current?.[areaId]?.(areaId, newCheckedVal), 0)
+  }, [itemsCheckerOnAreaChange])
 
   // #region JSX
   return (
@@ -106,14 +115,7 @@ const FlatCard = ({ flatId, checked, handleCheckedChange, flatNumber, bhkCount, 
               handleClick={() => toggleAreaExpansion(area.id)}
               lineItems={LINE_ITEMS_DUMMY.filter(lineItem => lineItem.area_id === area.id)}
               checked={areasChecked[area.id] || false}
-              handleCheckedChange={() => {
-                let newCheckedVal: boolean
-                setAreasChecked(prev => {
-                  newCheckedVal = !prev[area.id]
-                  return { ...prev, [area.id]: newCheckedVal }
-                })
-                setTimeout(() => itemsCheckerOnAreaChange.current?.[area.id]?.(area.id, newCheckedVal), 0)
-              }}
+              handleCheckedChange={() => handleAreaCheck(area.id)}
               setAreaCheckedOnItemsCheck={setAreaCheckedOnItemsCheck}
             />
           ))}
