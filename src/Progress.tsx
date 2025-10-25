@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { AREAS_DUMMY, FLATS_DUMMY, FLOORS_DUMMY } from './data'
 import { useProgressContext } from './ProgressContext'
 import FloorCard from './sections/section-cards/floor'
@@ -37,7 +37,7 @@ const Progress = () => {
   }, [])
 
   // Parent propagating to child (Floor check triggers (flats, area, & items) checked state recalculation)
-  const { flatsCheckersOnFloorChange, areasCheckerOnFlatChange, itemsCheckerOnAreaChange } = useProgressContext()
+  const { flatsCheckersOnFloorChange, areasCheckerOnFlatChange, itemsCheckerOnAreaChange, saveFloorSelectionsRef } = useProgressContext()
   const handleFloorCheck = useCallback((floorId: number) => {
     let newCheckedVal: boolean
     setFloorsChecked(prev => {
@@ -59,6 +59,14 @@ const Progress = () => {
       })
     }, 0)
   }, [flatsCheckersOnFloorChange, areasCheckerOnFlatChange, itemsCheckerOnAreaChange])
+
+  // #region Save selection
+  const saveFloorSelection = useCallback(() => {
+    setFloors(prev => prev.map(floor => ({ ...floor, status: floorsChecked[floor.id] })))
+  }, [floorsChecked])
+  useEffect(() => {
+    saveFloorSelectionsRef.current = saveFloorSelection
+  }, [saveFloorSelection, saveFloorSelectionsRef])
 
   // #region JSX
   return (

@@ -60,7 +60,7 @@ const FlatCard = ({ flatId, checked, handleCheckedChange, flatNumber, bhkCount, 
     })
   }, [flatId])
 
-  const { areasCheckerOnFlatChange } = useProgressContext()
+  const { areasCheckerOnFlatChange, saveAreaSelectionsRef } = useProgressContext()
   useEffect(() => {
     areasCheckerOnFlatChange.current[flatId] = setAreasCheckedOnFlatCheck
   }, [areasCheckerOnFlatChange, flatId, setAreasCheckedOnFlatCheck])
@@ -89,6 +89,14 @@ const FlatCard = ({ flatId, checked, handleCheckedChange, flatNumber, bhkCount, 
     // Check items
     setTimeout(() => itemsCheckerOnAreaChange.current?.[areaId]?.(areaId, newCheckedVal), 0)
   }, [itemsCheckerOnAreaChange])
+
+  // #region Save selection
+  const saveAreaSelection = useCallback(() => {
+    setAreasState(prev => prev.map(area => ({ ...area, status: areasChecked[area.id] })))
+  }, [areasChecked])
+  useEffect(() => {
+    saveAreaSelectionsRef.current[flatId] = saveAreaSelection
+  }, [saveAreaSelectionsRef, saveAreaSelection, flatId])
 
   // #region JSX
   return (

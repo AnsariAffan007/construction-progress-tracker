@@ -20,7 +20,7 @@ interface AreaCard {
 const AreaCard = ({ areaId, checked, handleCheckedChange, name, status, expanded, handleClick, lineItems, setAreaCheckedOnItemsCheck }: AreaCard) => {
 
   // Line item listing state
-  const [lineItemsState] = useState(lineItems)
+  const [lineItemsState, setLineItemsState] = useState(lineItems)
   // useEffect(() => setLineItemsState(lineItems), [lineItems])
 
   // Items checked local state
@@ -57,7 +57,15 @@ const AreaCard = ({ areaId, checked, handleCheckedChange, name, status, expanded
     itemsCheckerOnAreaChange.current[areaId] = setItemsCheckedOnAreaChange
   }, [itemsCheckerOnAreaChange, areaId, setItemsCheckedOnAreaChange])
 
-  const { editing } = useProgressContext()
+  const { editing, saveItemSelectionsRef } = useProgressContext()
+
+  // #region Save selection
+  const saveItemSelections = useCallback(() => {
+    setLineItemsState(prev => prev.map(item => ({ ...item, status: itemsChecked[item.id] })))
+  }, [itemsChecked])
+  useEffect(() => {
+    saveItemSelectionsRef.current[areaId] = saveItemSelections
+  }, [saveItemSelectionsRef, saveItemSelections, areaId])
 
   // #region JSX
   return (

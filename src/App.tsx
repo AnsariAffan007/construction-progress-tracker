@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import './App.css'
 import AppBreadcrumb from './components/layout/breadcrumb'
 import FilterCard from './sections/filter-card'
-import { ProgressContextProvider } from './ProgressContext'
+import { ProgressContextProvider, useProgressContext } from './ProgressContext'
 import Progress from './Progress'
+import { AREAS_DUMMY, FLATS_DUMMY, LINE_ITEMS_DUMMY } from './data'
 
 // #region MAIN
 function App() {
@@ -52,22 +53,53 @@ function App() {
       </div>
 
       {/* Update & Save Buttons */}
-      {!editing ? (
-        <button className='update-button fixed bottom-[30px] right-[30px] bg-[#1f2937]' onClick={() => setEditing(true)}>
-          Update Details
-        </button>
-      ) : (
-        <div className='flex gap-x-4 items-center fixed bottom-[30px] right-[30px]'>
-          <button className='update-button bg-[#10b981]'>
-            Save
-          </button>
-          <button className='update-button bg-[#1f2937]' onClick={() => setEditing(false)}>
-            Cancel
-          </button>
-        </div>
-      )}
+      <SaveButtons editing={editing} setEditing={setEditing} />
 
     </ProgressContextProvider>
+  )
+}
+
+// #region Save buttons
+const SaveButtons = ({
+  editing,
+  setEditing
+}: { editing: boolean, setEditing: React.Dispatch<React.SetStateAction<boolean>> }) => {
+
+  const { saveFloorSelectionsRef, saveFlatSelectionsRef, saveAreaSelectionsRef, saveItemSelectionsRef } = useProgressContext()
+
+  // Save handler
+  const handleSave = useCallback(() => {
+    // Save floors
+    saveFloorSelectionsRef.current()
+    // Save flats
+    FLATS_DUMMY.forEach(flat => {
+      saveFlatSelectionsRef.current[flat.id]?.()
+    })
+    AREAS_DUMMY.forEach(area => {
+      saveAreaSelectionsRef.current[area.id]?.()
+    })
+    LINE_ITEMS_DUMMY.forEach(item => {
+      saveItemSelectionsRef.current[item.id]?.()
+    })
+    setEditing(false)
+  }, [saveFloorSelectionsRef, saveFlatSelectionsRef, saveAreaSelectionsRef, saveItemSelectionsRef, setEditing])
+
+  // JSX
+  return (
+    !editing ? (
+      <button className='update-button fixed bottom-[30px] right-[30px] bg-[#1f2937]' onClick={() => setEditing(true)}>
+        Update Details
+      </button>
+    ) : (
+      <div className='flex gap-x-4 items-center fixed bottom-[30px] right-[30px]'>
+        <button className='update-button bg-[#10b981]' onClick={handleSave}>
+          Save
+        </button>
+        <button className='update-button bg-[#1f2937]' onClick={() => setEditing(false)}>
+          Cancel
+        </button>
+      </div>
+    )
   )
 }
 
