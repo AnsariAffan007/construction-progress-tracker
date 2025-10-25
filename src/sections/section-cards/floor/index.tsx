@@ -86,8 +86,24 @@ const FloorCard = ({
     else setFlatsChecked(prev => ({ ...prev, [flatId]: true }))
   }, [])
 
-  // Parent to child propagation (Flat checking triggers areas checked recalculation)
-  const { areasCheckerOnFlatChange } = useProgressContext()
+  // Parent to child propagation (Flat checking triggers areas checked recalculation & items checked recalculation)
+  const { areasCheckerOnFlatChange, itemsCheckerOnAreaChange } = useProgressContext()
+  const handleFlatCheck = useCallback((flatId: number) => {
+    let newCheckedVal: boolean
+    setFlatsChecked(prev => {
+      newCheckedVal = !prev[flatId]
+      return { ...prev, [flatId]: newCheckedVal }
+    })
+    setTimeout(() => {
+      // Checking areas
+      areasCheckerOnFlatChange.current?.[flatId]?.(flatId, newCheckedVal)
+      // Checking items
+      const areaIdsUnderThisFlat = AREAS_DUMMY.filter(area => area.flat_id === flatId).map(area => area.id)
+      areaIdsUnderThisFlat.forEach(areaId => {
+        itemsCheckerOnAreaChange.current?.[areaId]?.(areaId, newCheckedVal)
+      })
+    }, 0)
+  }, [areasCheckerOnFlatChange, itemsCheckerOnAreaChange])
 
   // #region JSX
   return (
@@ -114,14 +130,7 @@ const FloorCard = ({
               handleClick={() => toggleFlatExpansion(flat.id)}
               areas={AREAS_DUMMY.filter(area => area.flat_id === flat.id)}
               checked={flatsChecked[flat.id] || false}
-              handleCheckedChange={() => {
-                let newCheckedVal: boolean
-                setFlatsChecked(prev => {
-                  newCheckedVal = !prev[flat.id]
-                  return { ...prev, [flat.id]: !prev[flat.id] }
-                })
-                setTimeout(() => areasCheckerOnFlatChange.current?.[flat.id]?.(flat.id, newCheckedVal), 0)
-              }}
+              handleCheckedChange={() => handleFlatCheck(flat.id)}
               setFlatCheckedOnAreasCheck={setFlatCheckedOnAreasCheck}
             />
           ))}

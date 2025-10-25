@@ -36,7 +36,7 @@ const Progress = () => {
     else setFloorsChecked(prev => ({ ...prev, [floorId]: true }))
   }, [])
 
-  // Parent propagating to child (Floor check triggers flats checked state recalculation)
+  // Parent propagating to child (Floor check triggers (flats, area, & items) checked state recalculation)
   const { flatsCheckersOnFloorChange, areasCheckerOnFlatChange, itemsCheckerOnAreaChange } = useProgressContext()
   const handleFloorCheck = useCallback((floorId: number) => {
     let newCheckedVal: boolean
