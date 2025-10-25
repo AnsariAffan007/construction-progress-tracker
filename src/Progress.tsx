@@ -3,13 +3,18 @@ import { FLATS_DUMMY, FLOORS_DUMMY } from './data'
 import { useProgressContext } from './ProgressContext'
 import FloorCard from './sections/section-cards/floor'
 
+// #region MAIN
 const Progress = () => {
 
+  // Listing state
   const [floors, setFloors] = useState(FLOORS_DUMMY)
+
+  // Toggle floor expansion
   const toggleFloorExpansion = useCallback((floorId: number) => {
     setFloors(prev => prev.map(floor => floor.id === floorId ? { ...floor, expanded: !floor.expanded } : { ...floor }))
   }, [])
 
+  // Local state for if floor is checked or not
   const [floorsChecked, setFloorsChecked] = useState(() => {
     const temp: Record<number, boolean> = {}
     FLOORS_DUMMY.forEach(floor => {
@@ -18,6 +23,10 @@ const Progress = () => {
     return temp
   })
 
+  // #region Floor-flat sync
+  // Floor --> PARENT (Current)  |  Flat --> Child
+
+  // Child propagating to Parent (Flats check triggers floor checked state recalculation)
   const setFloorCheckedOnFlatsCheck = useCallback((floorId: number, flats: Record<number, boolean>) => {
     let isOneFlatUnchecked: boolean = false;
     Object.values(flats).forEach(flatChecked => {
@@ -27,8 +36,10 @@ const Progress = () => {
     else setFloorsChecked(prev => ({ ...prev, [floorId]: true }))
   }, [])
 
+  // Parent propagating to child (Floor check triggers flats checked state recalculation)
   const { flatsCheckersOnFloorChange } = useProgressContext()
 
+  // #region JSX
   return (
     floors.map((floor, floorIndex) => (
       <FloorCard

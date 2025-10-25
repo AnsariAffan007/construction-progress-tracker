@@ -17,6 +17,7 @@ interface FloorCard {
   setFloorCheckedOnFlatsCheck: (floorId: number, flats: Record<number, boolean>) => void,
 }
 
+// #region MAIN
 const FloorCard = ({
   checked,
   handleCheckedChange,
@@ -28,13 +29,16 @@ const FloorCard = ({
   setFloorCheckedOnFlatsCheck,
 }: FloorCard) => {
 
+  // Listing State
   const [flatsState, setFlatsState] = useState(flats)
   // useEffect(() => setFlatsState(flats), [flats])
 
+  // Toggling flat expansion to show areas
   const toggleFlatExpansion = useCallback((flatId: number) => {
     setFlatsState(prev => prev.map(flat => flat.id === flatId ? { ...flat, expanded: !flat.expanded } : { ...flat }))
   }, [])
 
+  // Local state to track flats checking
   const [flatsChecked, setFlatsChecked] = useState(() => {
     const temp: Record<number, boolean> = {}
     flats.forEach(flat => {
@@ -43,10 +47,15 @@ const FloorCard = ({
     return temp
   })
 
+  // #region floor--flat sync
+  // Floor - parent  |  Flat - CHILD (Current)
+
+  // Child propagating to parent (Flats checking trigger recalculation of floor checked)
   useEffect(() => {
     setFloorCheckedOnFlatsCheck(floorId, flatsChecked)
   }, [flatsChecked, setFloorCheckedOnFlatsCheck, floorId])
 
+  // Parent propagating to child (Floor check triggers flats checked state recalculation)
   const setFlatsCheckedOnFloorCheck = useCallback((floorIdBeingChecked: number, floorChecked: boolean) => {
     if (floorIdBeingChecked !== floorId) return;
     setFlatsChecked(prev => {
@@ -59,13 +68,15 @@ const FloorCard = ({
   }, [floorId])
 
   const { flatsCheckersOnFloorChange } = useProgressContext()
-
   useEffect(() => {
     flatsCheckersOnFloorChange.current[floorId] = setFlatsCheckedOnFloorCheck
   }, [flatsCheckersOnFloorChange, setFlatsCheckedOnFloorCheck, floorId])
 
-  const { areasCheckerOnFlatChange } = useProgressContext()
 
+  // #region flat-area sync
+  // Flat - Parent (Current)  |  Area - child
+
+  // Child to parent propagation (Areas checking triggers flat checked recalculation)
   const setFlatCheckedOnAreasCheck = useCallback((flatId: number, areas: Record<number, boolean>) => {
     let isOneAreaUnchecked: boolean = false;
     Object.values(areas).forEach(areaChecked => {
@@ -75,6 +86,10 @@ const FloorCard = ({
     else setFlatsChecked(prev => ({ ...prev, [flatId]: true }))
   }, [])
 
+  // Parent to child propagation (Flat checking triggers areas checked recalculation)
+  const { areasCheckerOnFlatChange } = useProgressContext()
+
+  // #region JSX
   return (
     <div className="floor-card">
 

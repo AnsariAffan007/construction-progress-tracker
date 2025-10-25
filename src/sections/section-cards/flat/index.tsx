@@ -19,15 +19,19 @@ interface FlatCard {
   setFlatCheckedOnAreasCheck: (flatId: number, areas: Record<number, boolean>) => void
 }
 
+// #region MAIN
 const FlatCard = ({ flatId, checked, handleCheckedChange, flatNumber, bhkCount, expanded, handleClick, areas, setFlatCheckedOnAreasCheck }: FlatCard) => {
 
+  // Area Listing state
   const [areasState, setAreasState] = useState(areas)
   // useEffect(() => setAreasState(areas), [areas])
 
+  // Area expansion toggler
   const toggleAreaExpansion = useCallback((areaId: number) => {
     setAreasState(prev => prev.map(area => area.id === areaId ? { ...area, expanded: !area.expanded } : { ...area }))
   }, [])
 
+  // Areas checked local state
   const [areasChecked, setAreasChecked] = useState(() => {
     const temp: Record<number, boolean> = {}
     areas.forEach(area => {
@@ -36,8 +40,17 @@ const FlatCard = ({ flatId, checked, handleCheckedChange, flatNumber, bhkCount, 
     return temp
   })
 
-  const setAreasCheckedOnFlatCheck = useCallback((floorIdBeingChecked: number, flatChecked: boolean) => {
-    if (floorIdBeingChecked !== flatId) return;
+  // #region flat-area sync
+  // Flat - Parent (Current)  |  Area - child
+
+  // Child to parent propagation (Areas checking triggering flat checked recalculation)
+  useEffect(() => {
+    setFlatCheckedOnAreasCheck(flatId, areasChecked)
+  }, [setFlatCheckedOnAreasCheck, areasChecked, flatId])
+
+  // Parent to child propagation (Flat checking triggers logic of areas checking)
+  const setAreasCheckedOnFlatCheck = useCallback((flatIdBeingChecked: number, flatChecked: boolean) => {
+    if (flatIdBeingChecked !== flatId) return;
     setAreasChecked(prev => {
       const temp: Record<number, boolean> = {}
       Object.keys(prev).forEach(areaId => {
@@ -48,15 +61,12 @@ const FlatCard = ({ flatId, checked, handleCheckedChange, flatNumber, bhkCount, 
   }, [flatId])
 
   const { areasCheckerOnFlatChange } = useProgressContext()
-
   useEffect(() => {
     areasCheckerOnFlatChange.current[flatId] = setAreasCheckedOnFlatCheck
   }, [areasCheckerOnFlatChange, flatId, setAreasCheckedOnFlatCheck])
 
-  useEffect(() => {
-    setFlatCheckedOnAreasCheck(flatId, areasChecked)
-  }, [setFlatCheckedOnAreasCheck, areasChecked, flatId])
 
+  // #region JSX
   return (
     <div className="flat-card">
 
