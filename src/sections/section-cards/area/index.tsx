@@ -59,15 +59,24 @@ const AreaCard = ({ areaId, checked, handleCheckedChange, name, status, expanded
     itemsCheckerOnAreaChange.current[areaId] = setItemsCheckedOnAreaChange
   }, [itemsCheckerOnAreaChange, areaId, setItemsCheckedOnAreaChange])
 
-  const { editing, saveItemSelectionsRef } = useProgressContext()
+  const { editing, handleItemSelectionsRef } = useProgressContext()
 
-  // #region Save selection
-  const saveItemSelections = useCallback(() => {
-    setLineItemsState(prev => prev.map(item => ({ ...item, status: itemsChecked[item.id] })))
-  }, [itemsChecked])
+  // #region Save/Revert
+  const handleItemSelections = useCallback((action: "save" | "cancel") => {
+    if (action === "save") setLineItemsState(prev => prev.map(item => ({ ...item, status: itemsChecked[item.id] })))
+    else {
+      setItemsChecked(() => {
+        const temp: Record<number, boolean> = {}
+        lineItems.forEach(item => {
+          temp[item.id] = item.status || false
+        })
+        return temp
+      })
+    }
+  }, [itemsChecked, lineItems])
   useEffect(() => {
-    saveItemSelectionsRef.current[areaId] = saveItemSelections
-  }, [saveItemSelectionsRef, saveItemSelections, areaId])
+    handleItemSelectionsRef.current[areaId] = handleItemSelections
+  }, [handleItemSelectionsRef, handleItemSelections, areaId])
 
   // #region JSX
   return (

@@ -38,7 +38,7 @@ const Progress = () => {
   }, [])
 
   // Parent propagating to child (Floor check triggers (flats, area, & items) checked state recalculation)
-  const { flatsCheckersOnFloorChange, areasCheckerOnFlatChange, itemsCheckerOnAreaChange, saveFloorSelectionsRef } = useProgressContext()
+  const { flatsCheckersOnFloorChange, areasCheckerOnFlatChange, itemsCheckerOnAreaChange, handleFloorSelectionsRef } = useProgressContext()
   const handleFloorCheck = useCallback((floorId: number) => {
     let newCheckedVal: boolean
     setFloorsChecked(prev => {
@@ -61,13 +61,22 @@ const Progress = () => {
     }, 0)
   }, [flatsCheckersOnFloorChange, areasCheckerOnFlatChange, itemsCheckerOnAreaChange])
 
-  // #region Save selection
-  const saveFloorSelection = useCallback(() => {
-    setFloors(prev => prev.map(floor => ({ ...floor, status: floorsChecked[floor.id] })))
+  // #region Save/Revert
+  const handleFloorSelection = useCallback((action: "save" | "cancel") => {
+    if (action === "save") setFloors(prev => prev.map(floor => ({ ...floor, status: floorsChecked[floor.id] })))
+    else {
+      setFloorsChecked(() => {
+        const temp: Record<number, boolean> = {}
+        FLOORS_DUMMY.forEach(floor => {
+          temp[floor.id] = floor.status || false
+        })
+        return temp
+      })
+    }
   }, [floorsChecked])
   useEffect(() => {
-    saveFloorSelectionsRef.current = saveFloorSelection
-  }, [saveFloorSelection, saveFloorSelectionsRef])
+    handleFloorSelectionsRef.current = handleFloorSelection
+  }, [handleFloorSelection, handleFloorSelectionsRef])
 
   // #region JSX
   return (

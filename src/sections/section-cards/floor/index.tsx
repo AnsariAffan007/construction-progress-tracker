@@ -71,7 +71,7 @@ const FloorCard = ({
     })
   }, [floorId])
 
-  const { flatsCheckersOnFloorChange, saveFlatSelectionsRef } = useProgressContext()
+  const { flatsCheckersOnFloorChange, handleFlatSelectionsRef } = useProgressContext()
   useEffect(() => {
     flatsCheckersOnFloorChange.current[floorId] = setFlatsCheckedOnFloorCheck
   }, [flatsCheckersOnFloorChange, setFlatsCheckedOnFloorCheck, floorId])
@@ -110,13 +110,22 @@ const FloorCard = ({
     }, 0)
   }, [areasCheckerOnFlatChange, itemsCheckerOnAreaChange])
 
-  // #region Save selection
-  const saveFlatSelection = useCallback(() => {
-    setFlatsState(prev => prev.map(flat => ({ ...flat, status: flatsChecked[flat.id] })))
-  }, [flatsChecked])
+  // #region Save/Revert
+  const handleFlatSelection = useCallback((action: "save" | "cancel") => {
+    if (action === "save") setFlatsState(prev => prev.map(flat => ({ ...flat, status: flatsChecked[flat.id] })))
+    else {
+      setFlatsChecked(() => {
+        const temp: Record<number, boolean> = {}
+        flats.forEach(flat => {
+          temp[flat.id] = flat.status || false
+        })
+        return temp
+      })
+    }
+  }, [flatsChecked, flats])
   useEffect(() => {
-    saveFlatSelectionsRef.current[floorId] = saveFlatSelection
-  }, [saveFlatSelection, saveFlatSelectionsRef, floorId])
+    handleFlatSelectionsRef.current[floorId] = handleFlatSelection
+  }, [handleFlatSelection, handleFlatSelectionsRef, floorId])
 
   // #region JSX
   return (

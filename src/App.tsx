@@ -65,24 +65,26 @@ const SaveButtons = ({
   setEditing
 }: { editing: boolean, setEditing: React.Dispatch<React.SetStateAction<boolean>> }) => {
 
-  const { saveFloorSelectionsRef, saveFlatSelectionsRef, saveAreaSelectionsRef, saveItemSelectionsRef } = useProgressContext()
+  const { handleFloorSelectionsRef, handleFlatSelectionsRef, handleAreaSelectionsRef, handleItemSelectionsRef } = useProgressContext()
 
-  // Save handler
-  const handleSave = useCallback(() => {
-    // Save floors
-    saveFloorSelectionsRef.current()
-    // Save flats
+  // Save/Cancel handler
+  const handleAction = useCallback((action: "save" | "cancel") => {
+    // handle floors
+    handleFloorSelectionsRef.current(action)
+    // handle flats
     FLATS_DUMMY.forEach(flat => {
-      saveFlatSelectionsRef.current[flat.id]?.()
+      handleFlatSelectionsRef.current[flat.id]?.(action)
     })
+    // handle areas
     AREAS_DUMMY.forEach(area => {
-      saveAreaSelectionsRef.current[area.id]?.()
+      handleAreaSelectionsRef.current[area.id]?.(action)
     })
+    // handle line items
     LINE_ITEMS_DUMMY.forEach(item => {
-      saveItemSelectionsRef.current[item.id]?.()
+      handleItemSelectionsRef.current[item.id]?.(action)
     })
     setEditing(false)
-  }, [saveFloorSelectionsRef, saveFlatSelectionsRef, saveAreaSelectionsRef, saveItemSelectionsRef, setEditing])
+  }, [handleFloorSelectionsRef, handleFlatSelectionsRef, handleAreaSelectionsRef, handleItemSelectionsRef, setEditing])
 
   // JSX
   return (
@@ -92,10 +94,10 @@ const SaveButtons = ({
       </button>
     ) : (
       <div className='flex gap-x-4 items-center fixed bottom-[30px] right-[30px]'>
-        <button className='update-button bg-[#10b981]' onClick={handleSave}>
+        <button className='update-button bg-[#10b981]' onClick={() => handleAction("save")}>
           Save
         </button>
-        <button className='update-button bg-[#1f2937]' onClick={() => setEditing(false)}>
+        <button className='update-button bg-[#1f2937]' onClick={() => handleAction("cancel")}>
           Cancel
         </button>
       </div>

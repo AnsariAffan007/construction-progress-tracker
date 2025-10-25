@@ -6,11 +6,11 @@ type ProgressContextType = {
   flatsCheckersOnFloorChange: RefObject<Record<number, (floorId: number, floorChecked: boolean) => void>>
   areasCheckerOnFlatChange: RefObject<Record<number, (flatId: number, flatChecked: boolean) => void>>
   itemsCheckerOnAreaChange: RefObject<Record<number, (areaId: number, areaChecked: boolean) => void>>
-  // Savers
-  saveFloorSelectionsRef: RefObject<() => void>
-  saveFlatSelectionsRef: RefObject<Record<number, () => void>>
-  saveAreaSelectionsRef: RefObject<Record<number, () => void>>
-  saveItemSelectionsRef: RefObject<Record<number, () => void>>
+  // Savers / Reverters
+  handleFloorSelectionsRef: RefObject<(action: "save" | "cancel") => void>
+  handleFlatSelectionsRef: RefObject<Record<number, (action: "save" | "cancel") => void>>
+  handleAreaSelectionsRef: RefObject<Record<number, (action: "save" | "cancel") => void>>
+  handleItemSelectionsRef: RefObject<Record<number, (action: "save" | "cancel") => void>>
 }
 
 const ProgressContext = createContext<ProgressContextType>({
@@ -20,10 +20,10 @@ const ProgressContext = createContext<ProgressContextType>({
   areasCheckerOnFlatChange: { current: {} },
   itemsCheckerOnAreaChange: { current: {} },
   // ---
-  saveFloorSelectionsRef: { current: () => { } },
-  saveFlatSelectionsRef: { current: {} },
-  saveAreaSelectionsRef: { current: {} },
-  saveItemSelectionsRef: { current: {} },
+  handleFloorSelectionsRef: { current: () => { } },
+  handleFlatSelectionsRef: { current: {} },
+  handleAreaSelectionsRef: { current: {} },
+  handleItemSelectionsRef: { current: {} },
 })
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -35,10 +35,10 @@ export const ProgressContextProvider = ({ editing, children }: { editing: boolea
   const areasCheckerOnFlatChange = useRef({})
   const itemsCheckerOnAreaChange = useRef({})
 
-  const saveFloorSelectionsRef = useRef(() => { })
-  const saveFlatSelectionsRef = useRef({})
-  const saveAreaSelectionsRef = useRef({})
-  const saveItemSelectionsRef = useRef({})
+  const handleFloorSelectionsRef = useRef(() => { })
+  const handleFlatSelectionsRef = useRef({})
+  const handleAreaSelectionsRef = useRef({})
+  const handleItemSelectionsRef = useRef({})
 
   return (
     <ProgressContext.Provider
@@ -49,10 +49,10 @@ export const ProgressContextProvider = ({ editing, children }: { editing: boolea
         areasCheckerOnFlatChange: areasCheckerOnFlatChange,
         itemsCheckerOnAreaChange: itemsCheckerOnAreaChange,
         // ---
-        saveFloorSelectionsRef: saveFloorSelectionsRef,
-        saveFlatSelectionsRef: saveFlatSelectionsRef,
-        saveAreaSelectionsRef: saveAreaSelectionsRef,
-        saveItemSelectionsRef: saveItemSelectionsRef,
+        handleFloorSelectionsRef: handleFloorSelectionsRef,
+        handleFlatSelectionsRef: handleFlatSelectionsRef,
+        handleAreaSelectionsRef: handleAreaSelectionsRef,
+        handleItemSelectionsRef: handleItemSelectionsRef,
       }}
     >
       {children}
