@@ -64,13 +64,16 @@ const FloorCard = ({
     flatsCheckersOnFloorChange.current[floorId] = setFlatsCheckedOnFloorCheck
   }, [flatsCheckersOnFloorChange, setFlatsCheckedOnFloorCheck, floorId])
 
-  // const cancelFloorSelection = useCallback(() => {
+  const { areasCheckerOnFlatChange } = useProgressContext()
 
-  // }, [])
-
-  // const saveFloorSelection = useCallback(() => {
-
-  // }, [])
+  const setFlatCheckedOnAreasCheck = useCallback((flatId: number, areas: Record<number, boolean>) => {
+    let isOneAreaUnchecked: boolean = false;
+    Object.values(areas).forEach(areaChecked => {
+      if (!areaChecked) isOneAreaUnchecked = true
+    })
+    if (isOneAreaUnchecked) setFlatsChecked(prev => ({ ...prev, [flatId]: false }))
+    else setFlatsChecked(prev => ({ ...prev, [flatId]: true }))
+  }, [])
 
   return (
     <div className="floor-card">
@@ -89,13 +92,22 @@ const FloorCard = ({
           {flatsState.map((flat, flatIndex) => (
             <FlatCard
               key={flatIndex}
+              flatId={flat.id}
               bhkCount={flat.bhk}
               flatNumber={flat.flat_number}
               expanded={flat.expanded || false}
               handleClick={() => toggleFlatExpansion(flat.id)}
               areas={AREAS_DUMMY.filter(area => area.flat_id === flat.id)}
               checked={flatsChecked[flat.id] || false}
-              handleCheckedChange={() => setFlatsChecked(prev => ({ ...prev, [flat.id]: !prev[flat.id] }))}
+              handleCheckedChange={() => {
+                let newCheckedVal: boolean
+                setFlatsChecked(prev => {
+                  newCheckedVal = !prev[flat.id]
+                  return { ...prev, [flat.id]: !prev[flat.id] }
+                })
+                setTimeout(() => areasCheckerOnFlatChange.current?.[flat.id]?.(flat.id, newCheckedVal), 0)
+              }}
+              setFlatCheckedOnAreasCheck={setFlatCheckedOnAreasCheck}
             />
           ))}
         </div>

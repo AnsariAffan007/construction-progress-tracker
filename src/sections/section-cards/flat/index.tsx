@@ -2,21 +2,24 @@ import ProgressDetailHead from "@/components/common/progress-detail-head"
 import AreaCard from "../area"
 import "./styles.css"
 import type { AreaProgress } from "@/types"
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { LINE_ITEMS_DUMMY } from "@/data"
 import { Activity } from "react"
+import { useProgressContext } from "@/ProgressContext"
 
 interface FlatCard {
+  flatId: number;
   flatNumber: number,
   bhkCount: number,
   expanded: boolean,
   handleClick: () => void,
   areas: AreaProgress[],
   checked: boolean,
-  handleCheckedChange: () => void
+  handleCheckedChange: () => void,
+  setFlatCheckedOnAreasCheck: (flatId: number, areas: Record<number, boolean>) => void
 }
 
-const FlatCard = ({ checked, handleCheckedChange, flatNumber, bhkCount, expanded, handleClick, areas }: FlatCard) => {
+const FlatCard = ({ flatId, checked, handleCheckedChange, flatNumber, bhkCount, expanded, handleClick, areas, setFlatCheckedOnAreasCheck }: FlatCard) => {
 
   const [areasState, setAreasState] = useState(areas)
   // useEffect(() => setAreasState(areas), [areas])
@@ -32,6 +35,27 @@ const FlatCard = ({ checked, handleCheckedChange, flatNumber, bhkCount, expanded
     })
     return temp
   })
+
+  const setAreasCheckedOnFlatCheck = useCallback((floorIdBeingChecked: number, flatChecked: boolean) => {
+    if (floorIdBeingChecked !== flatId) return;
+    setAreasChecked(prev => {
+      const temp: Record<number, boolean> = {}
+      Object.keys(prev).forEach(areaId => {
+        temp[parseInt(areaId)] = flatChecked
+      })
+      return temp
+    })
+  }, [flatId])
+
+  const { areasCheckerOnFlatChange } = useProgressContext()
+
+  useEffect(() => {
+    areasCheckerOnFlatChange.current[flatId] = setAreasCheckedOnFlatCheck
+  }, [areasCheckerOnFlatChange, flatId, setAreasCheckedOnFlatCheck])
+
+  useEffect(() => {
+    setFlatCheckedOnAreasCheck(flatId, areasChecked)
+  }, [setFlatCheckedOnAreasCheck, areasChecked, flatId])
 
   return (
     <div className="flat-card">
