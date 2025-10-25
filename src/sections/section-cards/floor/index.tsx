@@ -42,7 +42,7 @@ const FloorCard = ({
   const [flatsChecked, setFlatsChecked] = useState(() => {
     const temp: Record<number, boolean> = {}
     flats.forEach(flat => {
-      temp[flat.id] = flat.checked || false
+      temp[flat.id] = flat.status || false
     })
     return temp
   })

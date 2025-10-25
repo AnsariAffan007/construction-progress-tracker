@@ -1,34 +1,65 @@
 import ProgressDetailHead from "@/components/common/progress-detail-head"
 import "./styles.css"
 import type { LineItem } from "@/types"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useProgressContext } from "@/ProgressContext"
 
 interface AreaCard {
+  areaId: number;
   name: string,
   status: boolean,
   expanded: boolean,
   handleClick: () => void,
   lineItems: LineItem[],
   checked: boolean,
-  handleCheckedChange: () => void
+  handleCheckedChange: () => void,
+  setAreaCheckedOnItemsCheck: (areaId: number, items: Record<number, boolean>) => void
 }
 
-const AreaCard = ({ checked, handleCheckedChange, name, status, expanded, handleClick, lineItems }: AreaCard) => {
+// #region MAIN
+const AreaCard = ({ areaId, checked, handleCheckedChange, name, status, expanded, handleClick, lineItems, setAreaCheckedOnItemsCheck }: AreaCard) => {
 
-  const [lineItemsState, setLineItemsState] = useState(lineItems)
-  useEffect(() => setLineItemsState(lineItems), [lineItems])
+  // Line item listing state
+  const [lineItemsState] = useState(lineItems)
+  // useEffect(() => setLineItemsState(lineItems), [lineItems])
 
-  const { editing } = useProgressContext()
-
+  // Items checked local state
   const [itemsChecked, setItemsChecked] = useState(() => {
     const temp: Record<number, boolean> = {}
     lineItems.forEach(item => {
-      temp[item.id] = item.checked || false
+      temp[item.id] = item.status || false
     })
     return temp
   })
 
+  // #region area-item sync
+  // Area - Parent  |  Item - Child  (Both are in same current component)
+
+  // Child to parent propagation (Items checking triggers area checked recalculation)
+  useEffect(() => {
+    setAreaCheckedOnItemsCheck(areaId, itemsChecked)
+  }, [itemsChecked, setAreaCheckedOnItemsCheck, areaId])
+
+  // Parent to child propagation (Area checking triggers items checking logic)
+  const setItemsCheckedOnAreaChange = useCallback((areaIdBeingChecked: number, areaChecked: boolean) => {
+    if (areaIdBeingChecked !== areaId) return;
+    setItemsChecked(prev => {
+      const temp: Record<number, boolean> = {}
+      Object.keys(prev).forEach(itemId => {
+        temp[parseInt(itemId)] = areaChecked
+      })
+      return temp
+    })
+  }, [areaId])
+
+  const { itemsCheckerOnAreaChange } = useProgressContext()
+  useEffect(() => {
+    itemsCheckerOnAreaChange.current[areaId] = setItemsCheckedOnAreaChange
+  }, [itemsCheckerOnAreaChange, areaId, setItemsCheckedOnAreaChange])
+
+  const { editing } = useProgressContext()
+
+  // #region JSX
   return (
     <div className="area-card">
 

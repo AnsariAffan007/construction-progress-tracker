@@ -35,7 +35,7 @@ const FlatCard = ({ flatId, checked, handleCheckedChange, flatNumber, bhkCount, 
   const [areasChecked, setAreasChecked] = useState(() => {
     const temp: Record<number, boolean> = {}
     areas.forEach(area => {
-      temp[area.id] = area.checked || false
+      temp[area.id] = area.status || false
     })
     return temp
   })
@@ -65,6 +65,21 @@ const FlatCard = ({ flatId, checked, handleCheckedChange, flatNumber, bhkCount, 
     areasCheckerOnFlatChange.current[flatId] = setAreasCheckedOnFlatCheck
   }, [areasCheckerOnFlatChange, flatId, setAreasCheckedOnFlatCheck])
 
+  // #region area-item sync
+  // Area - Parent (Current)  |  Item - Child
+
+  // Child to parent propagation (Items checking triggers area checked recalculation)
+  const setAreaCheckedOnItemsCheck = useCallback((areaId: number, items: Record<number, boolean>) => {
+    let isOneItemUnchecked: boolean = false;
+    Object.values(items).forEach(itemChecked => {
+      if (!itemChecked) isOneItemUnchecked = true
+    })
+    if (isOneItemUnchecked) setAreasChecked(prev => ({ ...prev, [areaId]: false }))
+    else setAreasChecked(prev => ({ ...prev, [areaId]: true }))
+  }, [])
+
+  // Parent to child propagation (Area change triggers recalculation of items checked)
+  const { itemsCheckerOnAreaChange } = useProgressContext()
 
   // #region JSX
   return (
@@ -84,13 +99,22 @@ const FlatCard = ({ flatId, checked, handleCheckedChange, flatNumber, bhkCount, 
           {areasState.map((area, areaIndex) => (
             <AreaCard
               key={areaIndex}
+              areaId={area.id}
               name={area.name}
               status={area.status}
               expanded={area.expanded || false}
               handleClick={() => toggleAreaExpansion(area.id)}
               lineItems={LINE_ITEMS_DUMMY.filter(lineItem => lineItem.area_id === area.id)}
               checked={areasChecked[area.id] || false}
-              handleCheckedChange={() => setAreasChecked(prev => ({ ...prev, [area.id]: !prev[area.id] }))}
+              handleCheckedChange={() => {
+                let newCheckedVal: boolean
+                setAreasChecked(prev => {
+                  newCheckedVal = !prev[area.id]
+                  return { ...prev, [area.id]: newCheckedVal }
+                })
+                setTimeout(() => itemsCheckerOnAreaChange.current?.[area.id]?.(area.id, newCheckedVal), 0)
+              }}
+              setAreaCheckedOnItemsCheck={setAreaCheckedOnItemsCheck}
             />
           ))}
         </div>

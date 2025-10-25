@@ -20,5 +20,4 @@ export type ProgressItem = {
   status: boolean;
 
   expanded?: boolean;
-  checked?: boolean
 }

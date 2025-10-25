@@ -18,7 +18,7 @@ const Progress = () => {
   const [floorsChecked, setFloorsChecked] = useState(() => {
     const temp: Record<number, boolean> = {}
     FLOORS_DUMMY.forEach(floor => {
-      temp[floor.id] = floor.checked || false
+      temp[floor.id] = floor.status || false
     })
     return temp
   })
