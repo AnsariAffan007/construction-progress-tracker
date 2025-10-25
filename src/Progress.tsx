@@ -81,6 +81,7 @@ const Progress = () => {
         checked={floorsChecked[floor.id] || false}
         handleCheckedChange={() => handleFloorCheck(floor.id)}
         setFloorCheckedOnFlatsCheck={setFloorCheckedOnFlatsCheck}
+        status={floor.status}
       />
     ))
   )

@@ -15,6 +15,7 @@ interface FloorCard {
   checked: boolean,
   handleCheckedChange: () => void,
   setFloorCheckedOnFlatsCheck: (floorId: number, flats: Record<number, boolean>) => void,
+  status: boolean
 }
 
 // #region MAIN
@@ -27,6 +28,7 @@ const FloorCard = ({
   handleClick,
   flats,
   setFloorCheckedOnFlatsCheck,
+  status
 }: FloorCard) => {
 
   // Listing State
@@ -124,6 +126,7 @@ const FloorCard = ({
         itemName={floorName}
         checked={checked}
         handleCheckedChange={handleCheckedChange}
+        itemStatus={status}
       />
 
       <Activity mode={expanded ? 'visible' : "hidden"}>
@@ -140,6 +143,7 @@ const FloorCard = ({
               checked={flatsChecked[flat.id] || false}
               handleCheckedChange={() => handleFlatCheck(flat.id)}
               setFlatCheckedOnAreasCheck={setFlatCheckedOnAreasCheck}
+              status={flat.status}
             />
           ))}
         </div>

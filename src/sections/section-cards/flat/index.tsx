@@ -17,10 +17,11 @@ interface FlatCard {
   checked: boolean,
   handleCheckedChange: () => void,
   setFlatCheckedOnAreasCheck: (flatId: number, areas: Record<number, boolean>) => void
+  status: boolean
 }
 
 // #region MAIN
-const FlatCard = ({ flatId, checked, handleCheckedChange, flatNumber, bhkCount, expanded, handleClick, areas, setFlatCheckedOnAreasCheck }: FlatCard) => {
+const FlatCard = ({ status, flatId, checked, handleCheckedChange, flatNumber, bhkCount, expanded, handleClick, areas, setFlatCheckedOnAreasCheck }: FlatCard) => {
 
   // Area Listing state
   const [areasState, setAreasState] = useState(areas)
@@ -109,6 +110,7 @@ const FlatCard = ({ flatId, checked, handleCheckedChange, flatNumber, bhkCount, 
         itemName={`${flatNumber} [${bhkCount}-BHK]`}
         checked={checked}
         handleCheckedChange={handleCheckedChange}
+        itemStatus={status}
       />
 
       <Activity mode={expanded ? "visible" : "hidden"}>

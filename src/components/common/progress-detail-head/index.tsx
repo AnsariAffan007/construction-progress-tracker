@@ -31,13 +31,15 @@ const ProgressDetailHead = ({
 
         <span className={`progress-checkbox-container ${editing ? "flex" : "hidden"}`}>
           <input type="checkbox"
-            className="progress-checkbox"
-            checked={checked}
+            className={`progress-checkbox ${itemStatus ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+            checked={checked && !itemStatus}
             onChange={() => handleCheckedChange()}
             onClick={e => e.stopPropagation()}
+            disabled={itemStatus}
           />
         </span>
         <div className="progress-expand-trigger">
+          {itemStatus && <span className="checkmark">✓</span>}
           <span>{itemName}</span>
         </div>
 
