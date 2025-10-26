@@ -9,6 +9,8 @@ interface ProgressDetailHead {
   background?: boolean,
   checked: boolean,
   handleCheckedChange: () => void
+  totalItems: number;
+  completedItems: number;
 }
 
 const ProgressDetailHead = ({
@@ -18,7 +20,9 @@ const ProgressDetailHead = ({
   section,
   background,
   checked,
-  handleCheckedChange
+  handleCheckedChange,
+  totalItems,
+  completedItems
 }: ProgressDetailHead) => {
 
   const { editing } = useProgressContext()
@@ -47,7 +51,7 @@ const ProgressDetailHead = ({
 
       <div className='progress-info' style={{ cursor: "pointer" }}>
         <span className="progress-number">
-          [10 / 19]
+          [{completedItems} / {totalItems}]
         </span>
         <span className={`progress-status-badge ${itemStatus ? "completed" : "pending"}`}>
           {itemStatus ? "Completed" : "Pending"}
