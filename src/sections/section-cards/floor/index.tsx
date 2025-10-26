@@ -92,7 +92,7 @@ const FloorCard = ({
   }, [])
 
   // Parent to child propagation (Flat checking triggers areas checked recalculation & items checked recalculation)
-  const { areasCheckerOnFlatChange, itemsCheckerOnAreaChange, itemFilter } = useProgressContext()
+  const { areasCheckerOnFlatChange, itemsCheckerOnAreaChange, itemFilter, itemsSelection } = useProgressContext()
   const handleFlatCheck = useCallback((flatId: number) => {
     let newCheckedVal: boolean
     setFlatsChecked(prev => {
@@ -127,16 +127,25 @@ const FloorCard = ({
     handleFlatSelectionsRef.current[floorId] = handleFlatSelection
   }, [handleFlatSelection, handleFlatSelectionsRef, floorId])
 
+  const areasUnderFlats = useMemo(() => {
+    const flatIds = flatsState.map(flat => flat.id)
+    return AREAS_DUMMY.filter(area => flatIds.includes(area.flat_id))
+  }, [flatsState])
+
+  const itemsUnderAreas = useMemo(() => {
+    const areaIds = areasUnderFlats.map(area => area.id)
+    return LINE_ITEMS_DUMMY.filter(item => areaIds.includes(item.area_id))
+  }, [areasUnderFlats])
+
   // #region Filtering
   const filteredFlats = useMemo(() => {
     if (itemFilter.length === 0) return flatsState
-    return flatsState.filter(flat => {
-      const areasUnderFlat_ids = AREAS_DUMMY.filter(area => area.flat_id === flat.id).map(area => area.id)
-      const itemsUnderAboveAreas_names = LINE_ITEMS_DUMMY.filter(item => areasUnderFlat_ids.includes(item.area_id)).map(item => item.name)
-      if (itemsUnderAboveAreas_names.includes(itemFilter)) return true;
+    return flatsState.filter(() => {
+      const itemsUnderAreas_names = itemsUnderAreas.map(item => item.name)
+      if (itemsUnderAreas_names.includes(itemFilter)) return true;
       else return false;
     })
-  }, [flatsState, itemFilter])
+  }, [flatsState, itemFilter, itemsUnderAreas])
 
   // #region JSX
   return (
@@ -150,6 +159,8 @@ const FloorCard = ({
         checked={checked}
         handleCheckedChange={handleCheckedChange}
         itemStatus={status}
+        totalItems={itemsUnderAreas.length}
+        completedItems={itemsUnderAreas.filter(item => itemsSelection[item.id]).length}
       />
 
       <div className={`floor-content ${expanded ? 'expanded' : ''}`}>

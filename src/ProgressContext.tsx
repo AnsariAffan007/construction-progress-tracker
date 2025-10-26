@@ -1,8 +1,12 @@
-import { createContext, useContext, useRef, type RefObject } from "react";
+import { createContext, useContext, useRef, useState, type RefObject } from "react";
+import { LINE_ITEMS_DUMMY } from "./data";
 
 type ProgressContextType = {
   editing: boolean,
   itemFilter: string
+  // Items selection global state setter
+  itemsSelection: Record<number, boolean>,
+  setItemsSelection: React.Dispatch<React.SetStateAction<Record<number, boolean>>>
   // Syncers
   flatsCheckersOnFloorChange: RefObject<Record<number, (floorId: number, floorChecked: boolean) => void>>
   areasCheckerOnFlatChange: RefObject<Record<number, (flatId: number, flatChecked: boolean) => void>>
@@ -17,6 +21,9 @@ type ProgressContextType = {
 const ProgressContext = createContext<ProgressContextType>({
   editing: false,
   itemFilter: "",
+  // ---
+  itemsSelection: {},
+  setItemsSelection: () => { },
   // ---
   flatsCheckersOnFloorChange: { current: {} },
   areasCheckerOnFlatChange: { current: {} },
@@ -42,11 +49,22 @@ export const ProgressContextProvider = ({ editing, itemFilter, children }: { edi
   const handleAreaSelectionsRef = useRef({})
   const handleItemSelectionsRef = useRef({})
 
+  const [itemsSelection, setItemsSelection] = useState(() => {
+    const temp: Record<number, boolean> = {}
+    LINE_ITEMS_DUMMY.forEach(item => {
+      temp[item.id] = item.status
+    })
+    return temp
+  })
+
   return (
     <ProgressContext.Provider
       value={{
         editing: editing,
         itemFilter: itemFilter,
+        // ---
+        itemsSelection: itemsSelection,
+        setItemsSelection: setItemsSelection,
         // ---
         flatsCheckersOnFloorChange: flatsCheckersOnFloorChange,
         areasCheckerOnFlatChange: areasCheckerOnFlatChange,

@@ -62,7 +62,7 @@ const FlatCard = ({ status, flatId, checked, handleCheckedChange, flatNumber, bh
     })
   }, [flatId])
 
-  const { areasCheckerOnFlatChange, handleAreaSelectionsRef, itemFilter } = useProgressContext()
+  const { areasCheckerOnFlatChange, handleAreaSelectionsRef, itemFilter, itemsSelection } = useProgressContext()
   useEffect(() => {
     areasCheckerOnFlatChange.current[flatId] = setAreasCheckedOnFlatCheck
   }, [areasCheckerOnFlatChange, flatId, setAreasCheckedOnFlatCheck])
@@ -110,15 +110,20 @@ const FlatCard = ({ status, flatId, checked, handleCheckedChange, flatNumber, bh
     handleAreaSelectionsRef.current[flatId] = handleAreaSelection
   }, [handleAreaSelectionsRef, handleAreaSelection, flatId])
 
+  const itemsUnderArea = useMemo(() => {
+    const areaIds = areasState.map(area => area.id)
+    return LINE_ITEMS_DUMMY.filter(item => areaIds.includes(item.area_id))
+  }, [areasState])
+
   // #region Filtering
   const filteredAreas = useMemo(() => {
     if (itemFilter.length === 0) return areasState
-    return areasState.filter(area => {
-      const itemsUnderArea = LINE_ITEMS_DUMMY.filter(item => item.area_id === area.id).map(item => item.name)
-      if (itemsUnderArea.includes(itemFilter)) return true
+    return areasState.filter(() => {
+      const itemsUnderAreas_names = itemsUnderArea.map(item => item.name)
+      if (itemsUnderAreas_names.includes(itemFilter)) return true
       else return false;
     })
-  }, [itemFilter, areasState])
+  }, [itemFilter, areasState, itemsUnderArea])
 
   // #region JSX
   return (
@@ -132,6 +137,8 @@ const FlatCard = ({ status, flatId, checked, handleCheckedChange, flatNumber, bh
         checked={checked}
         handleCheckedChange={handleCheckedChange}
         itemStatus={status}
+        completedItems={itemsUnderArea.filter(item => itemsSelection[item.id]).length}
+        totalItems={itemsUnderArea.length}
       />
 
       <div className={`flat-content ${expanded ? "expanded" : ''}`}>

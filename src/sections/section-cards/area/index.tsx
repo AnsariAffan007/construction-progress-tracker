@@ -59,7 +59,7 @@ const AreaCard = ({ areaId, checked, handleCheckedChange, name, status, expanded
     itemsCheckerOnAreaChange.current[areaId] = setItemsCheckedOnAreaChange
   }, [itemsCheckerOnAreaChange, areaId, setItemsCheckedOnAreaChange])
 
-  const { editing, handleItemSelectionsRef, itemFilter } = useProgressContext()
+  const { editing, handleItemSelectionsRef, itemFilter, setItemsSelection } = useProgressContext()
 
   // #region Save/Revert
   const handleItemSelections = useCallback((action: "save" | "cancel") => {
@@ -84,6 +84,18 @@ const AreaCard = ({ areaId, checked, handleCheckedChange, name, status, expanded
     return lineItemsState.filter(item => item.name === itemFilter)
   }, [itemFilter, lineItemsState])
 
+  // Set global item selection state
+  useEffect(() => {
+    const temp: Record<number, boolean> = {}
+    lineItemsState.forEach(item => {
+      temp[item.id] = item.status
+    })
+    setItemsSelection(prev => ({
+      ...prev,
+      ...temp
+    }))
+  }, [lineItemsState, setItemsSelection])
+
   // #region JSX
   return (
     <div className="area-card">
@@ -95,6 +107,8 @@ const AreaCard = ({ areaId, checked, handleCheckedChange, name, status, expanded
         itemStatus={status}
         checked={checked}
         handleCheckedChange={handleCheckedChange}
+        totalItems={lineItemsState.length}
+        completedItems={lineItemsState.filter(item => item.status).length}
       />
 
       <div className={`area-content ${expanded ? "expanded" : ""}`}>
